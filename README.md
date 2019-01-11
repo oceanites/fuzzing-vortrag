@@ -84,10 +84,13 @@ Hauptseminar zum Thema Fuzzing
     * Format Strings (`\%s\%s\%s\%s`, `\%x \%x \%x`) % format string attacks
 
 Demonstration zufälliger Bit-Flips und Byte-Ersetzungen mittel `zzuf`:
+
 ![](https://github.com/ketograph/fuzzing-vortrag/blob/master/images/zzuf1.png "Unveränderter Text")
+
 ![](https://github.com/ketograph/fuzzing-vortrag/blob/master/images/zzuf2.png "Manipulierter Text")
     
 Datenmanipulation mittels `radamsa`
+
 ![](https://github.com/ketograph/fuzzing-vortrag/blob/master/images/radamsa.png "Manipulierter Text")
 
   
@@ -108,12 +111,15 @@ Datenmanipulation mittels `radamsa`
     
   
 Beispiel für Verwendung des Address Sanitizers:
+
 ![](https://github.com/ketograph/fuzzing-vortrag/blob/master/images/buffer_overflow1.png "Demonstrationsprogramm")
 
 Kompilierung und Ausführung ohne Sanitizer führt bei einem Buffer Overflow nicht zu einem Absturz. Erst wenn der Stack beschädigt wird, stürzt das Programm ab
+
 ![](https://github.com/ketograph/fuzzing-vortrag/blob/master/images/buffer_overflow1.png "Kompilierung und Ausführung ohne Sanitizer")
 
 Wenn aber der Address Sanitizer verwendet wird, dann führt ein Buffer Overflow sofort zu einem Programmabsturz.
+
 ![](https://github.com/ketograph/fuzzing-vortrag/blob/master/images/buffer_overflow1.png "Kompilierung und Ausführung mit AddressSanitizer")
 
 
