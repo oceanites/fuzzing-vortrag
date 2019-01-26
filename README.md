@@ -135,17 +135,17 @@ running strcpy...
 
 
 ### Tipps und Ratschläge
-In der Praxis muss immerzwischen Fuzzing-Geschwindigkeit und Effizienz abgewogen werden. 
-* Abwägung Fuzzing-Geschwindigkeit gegenüber Fuzzing-Effizienz: Anzahl gefunder Fehler = Programmausführungen * Sucheffizienz
-* Immer Verwendung von Sanitizern
+In der Praxis muss immerzwischen Fuzzing-Geschwindigkeit und Effizienz abgewogen werden. Zum Ziel einer möglichst großen Anzahl an gefunden Fehler muss das Programm möglichst oft mit unterschiedlichen Daten ausgeführt werden. Gleichzeitig müssen die unterschiedlichen Daten möglichst oft zu einem fehlerhaften Programmverhalten führen. So ist unter Umständen ein dummer, aber dafür schenller Fuzzer besser als ein sehr intelligenter, dafür aber langsamer Fuzzer. 
+Desweiteren sollte man immer Sanitizer verwenden, falls der Quellcode zur Verfügung steht. Dadurch können deutlich mehr Fehler gefunden werden. So wurde beispielsweise beim Kompililieren und darauffolgenden Benutzen eines kompletten Linux-Systems (Gentoo) schon Fehler in fast allen verwendeten Programmen gefunden. [SHA2017Böck](https://media.ccc.de/v/SHA2017-148-improving_security_with_fuzzing_and_sanitizers#t=593)
 * Teilweise Codeanpassungen nötig: beispielsweise Deaktivierung von Checksummen oder kryptografischen Signaturen
 
 
 
 ## Tools
 ### AFL und libFuzzer
-Die beiden bekanntesten Fuzzing-Tools sind aktuell der von Michal Zalewski entwickelte Fuzzer american fuzzy lob, kurz afl, sowie der von der LLVM-Community gepflegte libFuzzer. Beide erreichen durch das instrumentieren des Codes eine hohe Effizienz und hohe Code-Abdeckung. Mit beiden wurden hunderte Fehler gefunden und die Heartbleed getaufte Lücke in der OpenSSL-Bibliothek hätte durch Fuzzing in Verbindung mit Sanitizern gefunden werden können.
-  
+Die beiden bekanntesten Fuzzing-Tools sind aktuell der von Michal Zalewski entwickelte Fuzzer american fuzzy lob, kurz afl, sowie der von der LLVM-Community gepflegte libFuzzer. Beide erreichen durch das instrumentieren des Codes eine hohe Effizienz und hohe Code-Abdeckung. Mit beiden wurden hunderte Fehler gefunden und die Heartbleed getaufte Lücke in der OpenSSL-Bibliothek hätte durch Fuzzing in Verbindung mit Sanitizern gefunden werden können. 
+
+
 | AFL   | libFuzzer |
 | ----- | --------- |
 | Sehr schnelles Aufsetzen (5 Minuten) | Schnelles Aufsetzen (½ Stunde) | 
