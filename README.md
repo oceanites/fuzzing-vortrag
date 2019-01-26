@@ -28,19 +28,19 @@ Ich lege den Fokus im Weiteren auf Software und gehe dabei auf ein paar Besonder
 
 
 ### Zufälliges Fuzzing  (random fuzzing)
-Bei zufälligen Fuzzing werden, wie schon der Name andeutet, rein zufällige Daten an das System geschickt. Diese Methode ist sehr einfach und simpel zu implementieren (in Linux beispielsweise `cat /dev/urandom |  programm\_to\_fuzz`), aber dafür nicht sehr effizient. So reichen schon einfachste Validierungen der Eingangsdaten, um diese als fehlerhaft zu erkennen. Da das System in diesem Fall die Verarbeitung beendet, werden nur kleine Teile des Programms getestet.
+Bei zufälligen Fuzzing werden, wie schon der Name andeutet, rein zufällige Daten an das System geschickt. Diese Methode ist sehr einfach und simpel zu implementieren (in Linux beispielsweise `cat /dev/urandom |  programm_to_fuzz`), aber dafür nicht sehr effizient. So reichen schon einfachste Validierungen der Eingangsdaten, um diese als fehlerhaft zu erkennen. Da das System in diesem Fall die Verarbeitung beendet, werden nur kleine Teile des Programms getestet.
 
 ### Mutationsbasiertes Fuzzing (mutation based fuzzing)
 Eine deutlich effizientere Testmöglichkeit bietet das mutationsbasierte Fuzzing (engl. mutation-based fuzzing). Dabei wir zuerst eine Sammlung von Testdaten angelegt, Testkorpus genannt. Diese werden dann zufällig verändert (mutiert) und in das Programm gespeist. Diese Methode ist sehr einfach zu implementieren und effizient im Fehler finden. Da noch ein großer Teil der Daten valide ist, im Gegensatz zum zufälligen Fuzzing, werden die Daten angefangen zu verarbeiten. Simple Validierungen und Datenüberprüfungen erkennen die Daten als korrekt an.
 Ein Nachteil dieser Methode ist die große Abhängigkeit von der Testdatenauswahl. Für eine möglichst hohe Testabdeckung müssen viele Programmzweige durchlaufen werden. Dies geschieht aber nur, falls die Testdaten geeignet dafür sind und möglichst viele Fälle abdecken. Beispielsweise sollte man um einen PDF-Reader zu testen nicht nur simple PDF-Dateien mit Text verwenden, sondern es sollten auch Bilder, Videos und komplizierte Layouts verwendet werden. 
 
-* Tools: `zzuf`, `Radamsa`
+* Tools: [`zzuf`](http://caca.zoy.org/wiki/zzuf), [`Radamsa`](https://gitlab.com/akihe/radamsa)
  
 ### Regelbasiertes Fuzzing (generation based fuzzing)
 Eine ähnliche Methode ist das das regelbasierte Fuzzing (engl. generation based fuzzing). Dabei wird auf Grundlage dieser Spezifikation eine Beschreibung der Daten generiert, beispielsweise eine Grammatik oder ein Protokoll, und daraus werden Sequenzen generiert. Diese generierten Sequenzen lassen sich dann wieder zufällig mutieren. Zusätzlich lassen sich aber auch komplette Nachrichten der Kommunikation wiederholen oder weglassen. Dies hat den Vorteil einer einfachen Entdeckung auch komplexer Logik- und Protokollfehler, wenn beispielsweise die interne Zustandsautomat fehlerhafte Übergange hat.
 Durch die Notwendigkeit der Beschreibung ist der anfängliche Aufwand sehr hoch, diese Beschreibung muss zuerst erstellt werden. Außerdem müssen überhaupt die Daten wohlgeformt sein und einer Spezifikation genügen. Zusätzlich ist dann der Erfolg des Fuzzing stark abhängig von der Güte der Beschreibung, ob diese alle Aspekte modeliert oder nicht.
 
-* Tools: `Peach Fuzzer`, `Dharma`
+* Tools: [`Peach Fuzzer`](https://www.peach.tech/products/peach-fuzzer/), [`Dharma`](https://github.com/MozillaSecurity/dharma/)
   
 ### Instrumentiertes Fuzzing (coverage guided fuzzing)
 Die neuste Entwicklung ist das instrumentierte Fuzzing (engl. coverage guided fuzzing). Dabei wird für alle Eingangsdaten die Codeausführung beobachten und mit diesem Feedback die Eingangsdaten verändert, sodass möglichst viele Codezweige erreicht werden. Wenn beispielsweise durch Mutation eines bestimmten Bytes keinen neuen  Codezweige erreicht werden, wird die Mutation abgebrochen und durch Mutation anderer Bytes versucht, einen neuen Codezweig zu erreichen. Typischerweise ist auch hier Ausgangspunkt ein Korpus an Testdaten, die mutiert werden.
@@ -48,13 +48,15 @@ Diese Methode setzt natürlich voraus, dass man die Codeausführung beobachten k
 Ein weiterer Vorteil ist die Möglichkeit der Testkorpus- und Testfallminimierung. Bei der Minimierung des Testkorpus werden alle Testdaten zusammengefasst, bei deren Verarbeitung die gleichen Codezweige durchlaufen werden. Die Testfallminimierung verringert die Größe der einzelnen Testdaten, sodass eine möglichst kleiner Datensatz erzeugt wird, bei dessen Verarbeitung trotzdem diesselben Codepfade durchlaufen werden wie beim ursprünglichen, großen Datensatz. Beide Methoden führen zu einer höheren Performance und Effizienz bei den nächsten Fuzzing-Tests.
 
 * Tools: `AFL`, `libFuzzer`, `honggfuzz`
+
+
 Die Mächtigkeit des instrumentierten Fuzzing zeigt sich an einem Beispiel. Für das Fuzzing einer Bildbibliothek wurde als einziger Testfall eine Textdatei mit dein Inhalt `hello` genommen. Wenn dann das Fuzzing begonnen wird, werden nach und nach die Bytes so verändert, dass neue Codezweige erreicht werden und es nach und nach die Strukturen des Bildformates erhält. Nach einiger Zeit des Fuzzens wird dann sogar ein komplettes valides Bild erzeugt.
 [![Erzeugung valider Bilder beim instrumentierten Fuzzing einer Bildbibliothek](https://lh6.googleusercontent.com/proxy/-6MjaR00hYA40HOvCaSW4PF_TvPpqAjNZIwGadsPVaYE9hRrGNTi91BBKlVdXtK4X7E5qf9hgk6kHMrxWaE-WaCckCsgZzA=s0-d "Erzeugung valider Bilder beim instrumentierten Fuzzing einer Bildbibliothek")](https://lcamtuf.blogspot.com/2014/11/pulling-jpegs-out-of-thin-air.html)
 
 
 
 ### Datenmutation
-Das vollständige Verändern aller Bytes mit allen Möglichkeiten ist nicht machbar. So gibt es bei einem 32-Bit Wert 2^32 Möglichkeiten, was viele Tage dauern würde zu fuzzen. Aus diesem Grund muss man den Suchraum einschränken. So werden die Bits nur geflippt oder geshifftet und bei Zahlen Werte dazu addiert und subtrahiert. Außerdem kann man die Zahlen und Zeichenketten durch interesante Werte ersetzen, beispielsweise 0, 1, -1, die maximale und minimale Zahl des Zahlenbereichs, bei Gleitkommazahlen die speziellen Werte `NaN` oder `-Inf` und um Speicherfehler zu erkennen typische Buffergrößen wie 16, 32 oder 128. Interessante Zeichenketten sind beispielsweise komplett leere oder sehr lange Zeichenketten (`''`, `128*'a'`), spezielle Bytes und Zeichen wie `\0` als Ende von Zeichenketten in C oder `\n` als Zeilenumbruch oder Formatierungsbefehle wie `s\%s\%s\%s` oder `\%x \%x \%x` für die Funktion `printf`, die Format String-Angriffe ermöglichen.
+Das vollständige Verändern aller Bytes mit allen Möglichkeiten ist nicht machbar. So gibt es bei einem 32-Bit Wert 2^32 Möglichkeiten, was viele Tage dauern würde zu fuzzen. Aus diesem Grund muss man den Suchraum einschränken. So werden die Bits nur geflippt oder geshifftet und bei Zahlen Werte dazu addiert und subtrahiert. Außerdem kann man die Zahlen und Zeichenketten durch interesante Werte ersetzen, beispielsweise 0, 1, -1, die maximale und minimale Zahl des Zahlenbereichs, bei Gleitkommazahlen die speziellen Werte `NaN` oder `-Inf` und um Speicherfehler zu erkennen typische Buffergrößen wie 16, 32 oder 128. Interessante Zeichenketten sind beispielsweise komplett leere oder sehr lange Zeichenketten (`''`, `128*'a'`), spezielle Bytes und Zeichen wie `\0` als Ende von Zeichenketten in C oder `\n` als Zeilenumbruch oder Formatierungsbefehle wie `s%s%s%s` oder `%x %x %x` für die Funktion `printf`, die Format String-Angriffe ermöglichen.
 
 
 
@@ -76,8 +78,8 @@ Bestimmte Fehler in Programmen führen nicht oder nicht sofort zu einem Absturz.
 Eine Lösung für dieses Problem ist die Verwendung eines Sanitizers. Dieser fügt beim Kompilieren zusätzliche Instruktionen ein, um die Befehle zur Laufzeit zu prüfen. Beispielsweise kann vor jedem Speicherzugriff eine Überprüfung erfolgen, ob tatsächlich auf diesen Speicher zugegriffen werden darf. Ein Nachteil ist die verringerte Performance und der erhöhte Speicherbedarf, die sich beide um den Faktor zwei oder noch stärker verschlechtern können. Da aber beim Fuzzing deutlich mehr Fehler gefunden werden können, ist es trotzdem sinnvoll Sanitizer zu verwenden.
 Es wurden verschiedene Sanitizer entwickelt, diese sind aber teilweise nicht für alle Kompiler verfügbar. In der folgenden Tabelle ist eine Übersicht über die verschiedenen Sanitizer, deren erkannten Fehlerklassen und welche Kompiler diese unterstützen. 
 
-| Sanitizer   | Fehlerklassen | Kompiler |
-| ----- | --------- | ---- | --- |
+| Sanitizer   | Fehlerklassen    | Kompiler    |
+| ----------- | ---------------- | ----------- |
 | AddressSanitizer (ASan) | Out-of-bounds accesses, Use-after-free, Use-after-return, Use-after-scope, Double-free, invalid free | gcc, clang |
 | UndefinedBehaviorSanitizer (UBSan)| (divide by zero, integer overflow),    Using misaligned or null pointer,    Signed integer overflow,    Conversion to, from, or between floating-point types which would overflow the destination | gcc, clang |
 | MemorySanitizer | Lesen von uninitialisiertem Speicher | clang |
@@ -152,26 +154,26 @@ Die beiden bekanntesten Fuzzing-Tools sind aktuell der von Michal Zalewski entwi
 | Standard: Start vieler Prozesse, Möglichkeit des In-Prozess-Fuzzings| schnell durch In-Prozess-Fuzzing |
 
 #### Quickstart
-* AFL
+* [AFL](http://lcamtuf.coredump.cx/afl/QuickStartGuide.txt)
   * Kompilierung:  `CC=afl-gcc ./configure --disable-shared`
-  * Ausführung: `afl-fuzz [...] ./programm\_to\_fuzz`
-* libFuzzer
+  * Ausführung: `afl-fuzz [...] ./programm_to_fuzz`
+* [libFuzzer](http://llvm.org/docs/LibFuzzer.html#getting-started)
   * Implementierung des Helferprogramms: [![](https://github.com/ketograph/fuzzing-vortrag/blob/master/images/libfuzzer_quickstart.png "Fuzzing Ziel erstellen")](http://llvm.org/docs/LibFuzzer.html#id22)
-  * Kompilierung: `clang -fsanitize=fuzzer fuzz\_target.c`
+  * Kompilierung: `clang -fsanitize=fuzzer fuzz_target.c`
   * Ausführung: `./a.out [...]`
   
 ### Kernel Fuzzer
-* `syzkaller`
+* [`syzkaller`](https://github.com/google/syzkaller)
   * Entwicklung durch Google
   * Instrumentiertes Fuzzing
   * Start des Systems in VM und Fuzzing der Syscalls
-* Alternative: `trinity` 
+* Alternative: [`trinity` ](https://github.com/kernelslacker/trinity)
   
 ### Weitere Tools
-* `Sandsifter`
+* [`Sandsifter`](https://github.com/rigred/sandsifter)
   * Fuzzing von CPU-Instruktionen
   * Entdeckung von Bugs in Disassemblern, Emulatoren, Hypervisorn sowie x86-Chips 
-* `ClusterFuzz` und OSS-Fuzz-Projekt
+* [`ClusterFuzz`](https://github.com/google/oss-fuzz/blob/master/docs/clusterfuzz.md) und [OSS-Fuzz-Projekt](https://github.com/google/oss-fuzz)
   * Google-Entwicklung zum Fuzzing von Chrome
   * Verteiltes Fuzzing auf hunderten Kernen
   * OSS-Fuzz: Fuzzing verbreiteter  Open-Source-Software
