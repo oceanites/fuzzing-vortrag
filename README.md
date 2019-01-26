@@ -175,3 +175,14 @@ Zum initilen Aufsetzen von libFuzzer benötigt man etwas mehr Zeit, da man zuers
   * OSS-Fuzz: Fuzzing verbreiteter  Open-Source-Software
 
 
+# Quellen
+* Takanen, Ari AND DeMott, Jared AND Miller, Charlie: Fuzzing for software security testing and quality assurance. Artech House, 2008, Boston
+* H. Liang, X. Pei, X. Jia, W. Shen and J. Zhang, "Fuzzing: State of the Art," in IEEE Transactions on Reliability, vol. 67, no. 3, pp. 1199-1218, Sept. 2018. URL: http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8371326&isnumber=8452065
+*  [B.P. Miller, L. Fredriksen, and B. So, "An Empirical Study of the Reliability of UNIX Utilities", Communications of the ACM 33, 12 (December 1990). Also appears (in German translation) as "Fatale Fehlertractigkeit: Eine Empirische Studie zur Zuverlassigkeit von UNIX-Utilities", iX, March 1991.](ftp://ftp.cs.wisc.edu/paradyn/technical_papers/fuzz.pdf) 
+* [H. Böck: Improving security with Fuzzing and Sanitizers -  Free and open source software has far too many security critical bugs. SHA Konferenz 2017](https://media.ccc.de/v/SHA2017-148-improving_security_with_fuzzing_and_sanitizers)
+* [Jack Random: Fuzzing. Cryptocon 2015](https://media.ccc.de/v/CC15_-_20_-__-_lounge_-_201505101900_-_fuzzing_-_jack_random)
+* [Ben Nagy: Windows Kernel Fuzzing For Beginners. Ruxcon 2012](https://www.youtube.com/watch?v=FY-33TUKlqY)
+* https://www.owasp.org/index.php/Fuzzing
+* https://www.owasp.org/index.php/OWASP_Testing_Guide_Appendix_C:_Fuzz_Vectors
+* https://www.mwrinfosecurity.com/our-thinking/15-minute-guide-to-fuzzing/
+* https://lcamtuf.blogspot.com/2014/08/binary-fuzzing-strategies-what-works.html
