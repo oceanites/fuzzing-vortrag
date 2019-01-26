@@ -143,24 +143,20 @@ Desweiteren sollte man immer Sanitizer verwenden, falls der Quellcode zur Verfü
 
 ## Tools
 ### AFL und libFuzzer
-Die beiden bekanntesten Fuzzing-Tools sind aktuell der von Michal Zalewski entwickelte Fuzzer american fuzzy lob, kurz afl, sowie der von der LLVM-Community gepflegte libFuzzer. Beide erreichen durch das instrumentieren des Codes eine hohe Effizienz und hohe Code-Abdeckung. Mit beiden wurden hunderte Fehler gefunden und die Heartbleed getaufte Lücke in der OpenSSL-Bibliothek hätte durch Fuzzing in Verbindung mit Sanitizern gefunden werden können. 
+Die beiden bekanntesten Fuzzing-Tools sind aktuell der von Michal Zalewski entwickelte Fuzzer american fuzzy lob, kurz AFL, sowie der von der LLVM-Community gepflegte libFuzzer. Beide erreichen durch das instrumentieren des Codes eine hohe Effizienz und hohe Code-Abdeckung. Mit beiden wurden hunderte Fehler gefunden und die Heartbleed getaufte Lücke in der OpenSSL-Bibliothek hätte durch Fuzzing in Verbindung mit Sanitizern gefunden werden können. 
+AFL und libFuzzer unterscheiden sich in mehreren Details: AFL ermöglicht einen sehr schnellen und simplen Einstieg, nach wenigen Minuten kann man einen ersten Fuzzing-Durchlauf starten. So wird der Testkorpus ausgelesen und über `stdin` oder der Dateiname direkt an das Programm übergeben. Man kann auf unterschiedlichen Wegen ein Feedback über die Programmausführung erhalten: entweder durch Neu-Kompilieren und dem Einfügen von Instrumentationsbefehlen oder durch das Versehen von Binaries zur Laufzeit mit diesen Befehlen. Standardmäßig wird für jeden einzelnen Programmdurchlauf ein neuer Prozess gestartet, durch Anpassungen des Codes ist aber auch In-Prozess-Fuzzing möglich.
+
+Zum initilen Aufsetzen von libFuzzer benötigt man etwas mehr Zeit, da man zuerst ein kleines Helferprogramm schreiben und kompilieren muss, welche die generierten Daten des Fuzzers nimmt und das Programm damit aufruft. Die Kompilation muss dabei mit dem Kompiler `clang` erfolgen. Da standardmäßig In-Prozess-Fuzzing ausgeführt wird, ist die Fuzzinggeschwindigkeit höher im Vergleich zu AFL.
 
 
-| AFL   | libFuzzer |
-| ----- | --------- |
-| Sehr schnelles Aufsetzen (5 Minuten) | Schnelles Aufsetzen (½ Stunde) | 
-| Übergabe der Daten per `stdin` oder Datei | Übergabe der Daten durch Helferprogramm |
-| Gray- und White-Box-Fuzzing | Ausschließlich White-Box-Fuzzing, Kompilierung mit `clang` notwendig |
-| Standard: Start vieler Prozesse, Möglichkeit des In-Prozess-Fuzzings| schnell durch In-Prozess-Fuzzing |
+#### [Quickstart AFL](http://lcamtuf.coredump.cx/afl/QuickStartGuide.txt)
+* Kompilierung:  `CC=afl-gcc ./configure --disable-shared` 
+* Ausführung: `afl-fuzz [...] ./programm_to_fuzz`  
 
-#### Quickstart
-* [AFL](http://lcamtuf.coredump.cx/afl/QuickStartGuide.txt)
-  * Kompilierung:  `CC=afl-gcc ./configure --disable-shared`
-  * Ausführung: `afl-fuzz [...] ./programm_to_fuzz`
-* [libFuzzer](http://llvm.org/docs/LibFuzzer.html#getting-started)
-  * Implementierung des Helferprogramms: [![](https://github.com/ketograph/fuzzing-vortrag/blob/master/images/libfuzzer_quickstart.png "Fuzzing Ziel erstellen")](http://llvm.org/docs/LibFuzzer.html#id22)
-  * Kompilierung: `clang -fsanitize=fuzzer fuzz_target.c`
-  * Ausführung: `./a.out [...]`
+#### [Quickstart libFuzzer](http://llvm.org/docs/LibFuzzer.html#getting-started)
+* Implementierung des Helferprogramms: [![](https://github.com/ketograph/fuzzing-vortrag/blob/master/images/libfuzzer_quickstart.png "Fuzzing Ziel erstellen")](http://llvm.org/docs/LibFuzzer.html#id22) 
+* Kompilierung: `clang -fsanitize=fuzzer fuzz_target.c`   
+* Ausführung: `./a.out [...]`  
   
 ### Kernel Fuzzer
 * [`syzkaller`](https://github.com/google/syzkaller)
