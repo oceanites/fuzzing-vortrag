@@ -50,7 +50,7 @@ Diese Methode setzt natürlich voraus, dass man die Codeausführung beobachten k
 
 Ein weiterer Vorteil ist die Möglichkeit der Testkorpus- und Testfallminimierung. Bei der Minimierung des Testkorpus werden alle Testdaten zusammengefasst, bei deren Verarbeitung die gleichen Codezweige durchlaufen werden. Die Testfallminimierung verringert die Größe der einzelnen Testdaten, sodass eine möglichst kleiner Datensatz erzeugt wird, bei dessen Verarbeitung trotzdem diesselben Codepfade durchlaufen werden wie beim ursprünglichen, großen Datensatz. Beide Methoden führen zu einer höheren Performance und Effizienz bei den nächsten Fuzzing-Tests.
 
-* Tools: `AFL`, `libFuzzer`, `honggfuzz`
+* Tools: [`AFL`](http://lcamtuf.coredump.cx/afl/), [`libFuzzer`](https://llvm.org/docs/LibFuzzer.html), [`honggfuzz`](https://github.com/google/honggfuzz)
 
 
 Die Mächtigkeit des instrumentierten Fuzzing zeigt sich an einem Beispiel. Für das Fuzzing einer Bildbibliothek wurde als einziger Testfall eine Textdatei mit dein Inhalt `hello` genommen. Wenn dann das Fuzzing begonnen wird, werden nach und nach die Bytes so verändert, dass neue Codezweige erreicht werden und es nach und nach die Strukturen des Bildformates erhält. Nach einiger Zeit des Fuzzens wird dann sogar ein komplettes valides Bild erzeugt.
@@ -156,7 +156,7 @@ running strcpy...
 ### Tipps und Ratschläge
 In der Praxis muss immer zwischen Fuzzing-Geschwindigkeit und Effizienz abgewogen werden. Zum Ziel einer möglichst großen Anzahl an gefunden Fehler muss das Programm möglichst oft mit unterschiedlichen Daten ausgeführt werden. Gleichzeitig müssen die unterschiedlichen Daten möglichst oft zu einem fehlerhaften Programmverhalten führen. So ist unter Umständen ein dummer, aber dafür schneller Fuzzer besser als ein sehr intelligenter, dafür aber langsamer Fuzzer. 
 
-Des weiteren sollte man immer Sanitizer verwenden, falls der Quellcode zur Verfügung steht. Dadurch können deutlich mehr Fehler gefunden werden. So wurde beispielsweise beim Kompilieren und darauffolgenden Benutzen eines kompletten Linux-Systems (Gentoo) mit aktivierten Address Sanitizer Fehler in fast allen verwendeten Programmen gefunden. (https://media.ccc.de/v/SHA2017-148-improving_security_with_fuzzing_and_sanitizers#t=593)
+Des weiteren sollte man immer Sanitizer verwenden, falls der Quellcode zur Verfügung steht. Dadurch können deutlich mehr Fehler gefunden werden. So wurde beispielsweise beim Kompilieren und darauffolgenden Benutzen eines kompletten Linux-Systems (Gentoo) mit aktivierten Address Sanitizer Fehler in fast allen verwendeten Programmen gefunden [[Böck, Hanno. Improving security with Fuzzing and Sanitizers. Konferenzvortrag SHA 2017](https://media.ccc.de/v/SHA2017-148-improving_security_with_fuzzing_and_sanitizers#t=593)].
 
 Die Verwendung von Prüfsummen oder kryptografische Signaturen erschwert das Fuzzing. So werden beim Mutieren der Daten die Prüfsummen ungültig, das Programm überprüft und erkennt die ungültigen Daten und bricht die Verarbeitung ab. Daher sollten solche Elemente entweder im Quellcode deaktiviert werden oder die mutierten Daten müssen eine Nachverarbeitungsschritt durchlaufen, bei dem die Checksumme für die mutierten Daten neu berechnet wird.
 
