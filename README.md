@@ -102,42 +102,11 @@ $ cat ascii-art | zzuf -r 0.003
 $
 ```
  
-<table><tr><th>
-Ausgangstext</th><th>
-Response
-</th>
-</tr>
-
-<tr>
-
-<td>
-<pre>
-<br/><br/><br/>200<br/><br/><br/><br/><br/>400<br/>
-</pre>
-</td>
-
-<td>
-<pre>
-json
-  {
-    "id": 10,
-    "username": "alanpartridge",
-    "email": "alan@alan.com",
-    "password_hash": "$2a$10$uhUIUmVWVnrBWx9rrDWhS.CPCWCZsyqqa8./whhfzBZydX7yvahHS",
-    "password_salt": "$2a$10$uhUIUmVWVnrBWx9rrDWhS.",
-    "created_at": "2015-02-14T20:45:26.433Z",
-    "updated_at": "2015-02-14T20:45:26.540Z"
-}
-</pre>
-</td>
-
-</tr>
-</table
  
 Datenmanipulation mittels `radamsa`
 
 ```console
-$ echo "Fuzzing 123 abc" | radamsa -n 13
+$ echo Fuzzing 123 abc | radamsa -n 13
 F󠁟uzzing 170141183460469231731687303715884105728 abc
 Fuzzing 128�0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa252823118408938500307192722993203201 abc
 Fuzzing 1 abc
