@@ -175,13 +175,13 @@ Zum initilen Aufsetzen von libFuzzer benötigt man etwas mehr Zeit, da man zuers
 
 
 # Literatur
-* Takanen, Ari/DeMott, Jared/Miller, Charlie: Fuzzing for software security testing and quality assurance, Artech House, 2008, Boston
-* H. Liang, X. Pei, X. Jia, W. Shen and J. Zhang, "Fuzzing: State of the Art," in IEEE Transactions on Reliability, vol. 67, no. 3, pp. 1199-1218, Sept. 2018. URL: http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8371326&isnumber=8452065
-*  [B.P. Miller, L. Fredriksen, and B. So, "An Empirical Study of the Reliability of UNIX Utilities", Communications of the ACM 33, 12 (December 1990). Also appears (in German translation) as "Fatale Fehlertractigkeit: Eine Empirische Studie zur Zuverlassigkeit von UNIX-Utilities", iX, March 1991.](ftp://ftp.cs.wisc.edu/paradyn/technical_papers/fuzz.pdf) 
-* [H. Böck: Improving security with Fuzzing and Sanitizers -  Free and open source software has far too many security critical bugs. SHA Konferenz 2017](https://media.ccc.de/v/SHA2017-148-improving_security_with_fuzzing_and_sanitizers)
-* [Jack Random: Fuzzing. Cryptocon 2015](https://media.ccc.de/v/CC15_-_20_-__-_lounge_-_201505101900_-_fuzzing_-_jack_random)
-* [Ben Nagy: Windows Kernel Fuzzing For Beginners. Ruxcon 2012](https://www.youtube.com/watch?v=FY-33TUKlqY)
-* https://www.owasp.org/index.php/Fuzzing
-* https://www.owasp.org/index.php/OWASP_Testing_Guide_Appendix_C:_Fuzz_Vectors
-* https://www.mwrinfosecurity.com/our-thinking/15-minute-guide-to-fuzzing/
-* https://lcamtuf.blogspot.com/2014/08/binary-fuzzing-strategies-what-works.html
+* TAKANEN, Ari, Jared DEMOTT und Charlie MILLER, 2008. Fuzzing for software security testing and quality assurance. Boston: Artech House. ISBN 978-1-596-93214-2
+* LIANG, H. und andere, 2018. Fuzzing: State of the Art. In: IEEE Transactions on Reliability [online], vol. 67, no. 3, S. 1199-1218 [Zugriff am: 18.12.2018]. IEEE Xplore Digital Library. ISSN 1558-1721. Verfügbar unter: DOI: [10.1109/TR.2018.2834476](http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8371326&isnumber=8452065)
+*  MILLER, Barton P. und andere, 1990. An Empirical Study of the Reliability of UNIX Utilities. In:  Communications of the ACM [online]. 33, S. 32-44 [Zugriff am: 20.12.2018]. ACM Digital Library. ISSN 0001-0782. Verfügbar unter: [DOI: 10.1145/96267.96279 ](https://dl.acm.org/citation.cfm?doid=96267.96279). [Alternative Quelle: Website des Autors](ftp://ftp.cs.wisc.edu/paradyn/technical_papers/fuzz.pdf) 
+* BÖCK, Hanno, 2017. Improving security with Fuzzing and Sanitizers: Free and open source software has far too many security critical bugs [Konferenzvortrag]. Konferenz: Still Hacking Anyway (SHA) 2017. Verfügbar unter: https://media.ccc.de/v/SHA2017-148-improving_security_with_fuzzing_and_sanitizers
+* RANDOM, Jack, 2015: Fuzzing [Konferenzvortrag]. Konferenz: Cryptocon 2015. Verfügbar unter: https://media.ccc.de/v/CC15_-_20_-__-_lounge_-_201505101900_-_fuzzing_-_jack_random
+* NAGY, Ben, 2012. Windows Kernel Fuzzing For Beginners [Konferenzvortrag]. Konferenz: Ruxcon 2012. Verfügbar unter: https://www.youtube.com/watch?v=FY-33TUKlqY
+* The OWASP Foundation. Fuzzing. Zugriff am: 03.01.2019. Verfügbar unter: https://www.owasp.org/index.php/Fuzzing
+* The OWASP Foundation. Fuzz Vectors. Zugriff am: 03.01.2019. Verfügbar unter: https://www.owasp.org/index.php/OWASP_Testing_Guide_Appendix_C:_Fuzz_Vectors
+* MWR InfoSecurity. 15 minute guide to fuzzing. Zugriff am: 04.01.2019. Verfügbar unter: https://www.mwrinfosecurity.com/our-thinking/15-minute-guide-to-fuzzing/
+* ZALEWSKI, Michal, 2014. Binary fuzzing strategies: what works, what doesn't. Zugriff am: 04.01.2019. Verfügbar unter: https://lcamtuf.blogspot.com/2014/08/binary-fuzzing-strategies-what-works.html
