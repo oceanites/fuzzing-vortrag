@@ -1,43 +1,38 @@
-2 SWS, Selbststudium auf Leistungsschein
-
-
-
-
-# Fuzzing - Ein kurzer Überblick
-Hauptseminar zum Thema Fuzzing
+# Hauptseminar: Fuzzing - Ein kurzer Überblick
 
 Fuzzing ist eine Methode aus dem Software- bzw. Hardwaretesting und ist seit den 1980er Jahren bekannt und seitdem immer weiter erforscht und verbessert.
 Die Grundidee ist dabei sehr simpel und besteht aus zwei Schritten:
 1. ein System mit zufälligen Daten starten
-2. einen Systemabsturz und dessen Ursache protokollieren
-Diese beiden Schritten werden dann sehr oft ausgeführt (tausend- oder millionenfach).
+2. jeden Systemabsturz und dessen Ursache protokollieren
 
-Durch das simple Prinzip ist eine Implementierung sehr einfach und für neue Systeme ohne bestehende Fuzzing-Software lassen sich sehr schnell einfache Fuzzing-Tests schreiben. Da im Gegensatz zu Unit Tests die Testfälle nicht manuell geschrieben werden müssen und damit von der Geschwindigkeit und Kreativität eines Menschen abhängen, werden relativ einfach auch Fehler bei Randfällen und Szenarien außerhalb der Spezifikation gefunden. Zusätzlich ist der Wartungsaufwand gering: beim initialen Aufsetzen muss man keine Testfälle spezifizieren sondern nur das System. danach werden ohne weiteren manuellen Aufwand die Tests durchlaufen. Auch muss man bei Systemänderungen nicht die Testfallspezifikationen anpassen.
+Diese beiden Schritten werden dann sehr oft ausgeführt, mehrere tausend bis Millionen Male.
 
-Nachteilig ist die Einschränkung von Fuzzing, dass nur die Robustheit getestet wird, dass heißt ob das Programm abstürzt oder sich aufhängt. Eine Verifikation der Ergebnisse findet nicht statt. Außerdem ist der Rechenaufwand hoch, so muss man bei komplexeren Systemen, die sich nicht isolieren lassen und große Eingabedaten benötigen sehr viele Tests ausführen und entweder tage- bzw. wochenlang fuzzen oder statt einem Rechner dutzende oder hunderte verwenden.
+Durch das simple Prinzip ist eine Implementierung sehr einfach und für neue Systeme ohne bestehende Fuzzing-Software lassen sich sehr schnell einfache Fuzzing-Tests schreiben. Da im Gegensatz zu Unit Tests die Testfälle nicht manuell geschrieben werden müssen und damit von der Geschwindigkeit und Kreativität eines Menschen abhängen, werden relativ einfach auch Fehler bei Randfällen und Szenarien außerhalb der Spezifikation gefunden. Zusätzlich ist der Wartungsaufwand gering: beim initialen Aufsetzen muss man keine Testfälle spezifizieren sondern nur das System. Danach werden ohne weiteren manuellen Aufwand die Tests durchlaufen. Auch muss man bei Systemänderungen nicht die Testfallspezifikationen anpassen.
+
+Nachteilig ist die Einschränkung von Fuzzing, dass nur die Robustheit getestet wird. Es wird nur überprüft ob das Programm abstürzt oder sich aufhängt, eine Verifikation der Ergebnisse findet nicht statt. Außerdem ist der Rechenaufwand hoch, so muss man bei komplexeren Systemen, die sich nicht isolieren lassen und große Eingabedaten benötigen sehr viele Tests ausführen und entweder tage- bzw. wochenlang fuzzen oder statt einem Rechner dutzende oder hunderte verwenden. So verwendet Google für das Fuzzing von Chrome tausende CPU-Kerne.
 
 
 ## Techniken
-Grundsätzlich lassen sich mehrere Aspekte unterscheiden: zum einen welches System gefuzzt wird und zum anderen wie die Daten generiert werden. In diesem Zusammenhang kann System für mehrere Sachen stehen: zum einen für Programme, dann Betriebssysteme (als Unterform von Programmen) sowie Hardware. 
+Grundsätzlich lassen sich mehrere Aspekte unterscheiden: zum einen welches System gefuzzt wird und zum anderen wie die Daten generiert werden. In diesem Zusammenhang kann System für mehrere Sachen stehen: zum einen für Programme bzw. Betriebssysteme als Unterform von Programmen sowie Hardware. 
 
-Die Datengenerierung kann durch mehrere Methoden geschehen: zufälliges Fuzzing, mutationsbasiertes Fuzzing, regelbasiertes Fuzzing sowie instrumentiertes Fuzzing. Wie die generierten Daten an das gefuzzte System kommen, ist lediglich eine Frage, welche Schnittstellen das System zur Verfügung stellt. Bei  Programmen können dies beispielsweise Dateien, `stdin` oder Netzwerkschnittstellen (beispielsweise bei Server) sein. Betriebssysteme werden oft über die spezifischen Schnittstellen wie `syscalls` oder `ioctl` angesprochen oder emulierte Hardwaregeräte wie USB-Geräte senden Daten an das Betriebssystem und dessen Treiber. Hardware kann zum einen über das ändern der elektrischen Signale gefuzzt werden oder bei Prozessoren über die Maschinenbefehle. 
+Die Datengenerierung kann durch mehrere Methoden geschehen: zufälliges Fuzzing, mutationsbasiertes Fuzzing, regelbasiertes Fuzzing sowie instrumentiertes Fuzzing. Wie die generierten Daten an das gefuzzte System kommen, ist lediglich eine Frage, welche Schnittstellen das System zur Verfügung stellt. Bei  Programmen können dies beispielsweise Dateien, die Standardeingabe `stdin` unter Linux oder Netzwerkschnittstellen (beispielsweise bei Server) sein. Betriebssysteme werden oft über die spezifischen Schnittstellen wie `syscalls` oder `ioctl` angesprochen. Genausogut kann man Hardwaregeräte wie USB-Geräte emulieren und diese senden Daten an das Betriebssystem und dessen Treiber. Hardware kann zum einen über das ändern der elektrischen Signale gefuzzt werden oder bei Prozessoren über die Maschinenbefehle. 
 
-Ich lege den Fokus im Weiteren auf Software und gehe dabei auf ein paar Besonderheiten dabei ein. Die grundsätzlichen Methoden lassen sich dabei aber genauso gut auf Hardwaresysteme übertragen.
+Ich lege den Fokus im Weiteren Text auf Software und gehe dabei auf ein paar Besonderheiten dabei ein. Die grundsätzlichen Methoden lassen sich dabei aber genauso gut auf Hardwaresysteme übertragen.
 
 
 
 ### Zufälliges Fuzzing  (random fuzzing)
-Bei zufälligen Fuzzing werden, wie schon der Name andeutet, rein zufällige Daten an das System geschickt. Diese Methode ist sehr einfach und simpel zu implementieren (in Linux beispielsweise `cat /dev/urandom |  programm_to_fuzz`), aber dafür nicht sehr effizient. So reichen schon einfachste Validierungen der Eingangsdaten, um diese als fehlerhaft zu erkennen. Da das System in diesem Fall die Verarbeitung beendet, werden nur kleine Teile des Programms getestet.
+Bei zufälligen Fuzzing werden, wie schon der Name andeutet, rein zufällige Daten an das System geschickt. Diese Methode ist sehr einfach und simpel zu implementieren (in Linux beispielsweise `cat /dev/urandom |  programm_to_fuzz`), aber nicht sehr effizient. So reichen schon einfachste Validierungen der Eingangsdaten, um diese als fehlerhaft zu erkennen. Da das System in diesem Fall die Verarbeitung beendet, werden nur kleine Teile des Programms getestet.
 
 ### Mutationsbasiertes Fuzzing (mutation based fuzzing)
 Eine deutlich effizientere Testmöglichkeit bietet das mutationsbasierte Fuzzing (engl. mutation-based fuzzing). Dabei wir zuerst eine Sammlung von Testdaten angelegt, Testkorpus genannt. Diese werden dann zufällig verändert (mutiert) und in das Programm gespeist. Diese Methode ist sehr einfach zu implementieren und effizient im Fehler finden. Da noch ein großer Teil der Daten valide ist, im Gegensatz zum zufälligen Fuzzing, werden die Daten angefangen zu verarbeiten. Simple Validierungen und Datenüberprüfungen erkennen die Daten als korrekt an.
 
-Ein Nachteil dieser Methode ist die große Abhängigkeit von der Testdatenauswahl. Für eine möglichst hohe Testabdeckung müssen viele Programmzweige durchlaufen werden. Dies geschieht aber nur, falls die Testdaten geeignet dafür sind und möglichst viele Fälle abdecken. Beispielsweise sollte man um einen PDF-Reader zu testen nicht nur simple PDF-Dateien mit Text verwenden, sondern es sollten auch Bilder, Videos und komplizierte Layouts verwendet werden. 
+Ein Nachteil dieser Methode ist die große Abhängigkeit von der Testdatenauswahl. Für eine möglichst hohe Testabdeckung müssen viele Programmzweige durchlaufen werden. Dies geschieht aber nur, falls die Testdaten geeignet dafür sind und möglichst viele Fälle abdecken. Beispielsweise sollte man um einen PDF-Reader zu testen nicht nur simple PDF-Dateien mit Text verwenden, sondern es sollten auch Bilder, Videos, eingebettete Schriftarten und komplizierte Layouts verwendet werden. 
 
 * Tools: [`zzuf`](http://caca.zoy.org/wiki/zzuf), [`Radamsa`](https://gitlab.com/akihe/radamsa)
  
 ### Regelbasiertes Fuzzing (generation based fuzzing)
-Eine ähnliche Methode ist das das regelbasierte Fuzzing (engl. generation based fuzzing). Dabei wird auf Grundlage dieser Spezifikation eine Beschreibung der Daten generiert, beispielsweise eine Grammatik oder ein Protokoll, und daraus werden Sequenzen generiert. Diese generierten Sequenzen lassen sich dann wieder zufällig mutieren. Zusätzlich lassen sich aber auch komplette Nachrichten der Kommunikation wiederholen oder weglassen. Dies hat den Vorteil einer einfachen Entdeckung auch komplexer Logik- und Protokollfehler, wenn beispielsweise die interne Zustandsautomat fehlerhafte Übergange hat.
+Eine ähnliche Methode ist das das regelbasierte Fuzzing (engl. generation based fuzzing). Dabei wird auf Grundlage dieser Spezifikation eine Beschreibung der Daten generiert, beispielsweise eine Grammatik oder ein Protokoll, und daraus werden Sequenzen generiert. Diese generierten Sequenzen lassen sich dann wieder zufällig mutieren. Zusätzlich lassen sich aber auch komplette Nachrichten der Kommunikation wiederholen oder weglassen. Dies hat den Vorteil einer einfachen Entdeckung auch komplexer Logik- und Protokollfehler, wenn beispielsweise die interne Zustandsautomat fehlerhafte Übergange hat. Außerdem können alle möglichen Fälle der Spezifikation getestet werden, wordurch der Test sehr gründlich erfolgt.
 
 Durch die Notwendigkeit der Beschreibung ist der anfängliche Aufwand sehr hoch, diese Beschreibung muss zuerst erstellt werden. Außerdem müssen überhaupt die Daten wohlgeformt sein und einer Spezifikation genügen. Zusätzlich ist dann der Erfolg des Fuzzing stark abhängig von der Güte der Beschreibung, ob diese alle Aspekte modeliert oder nicht.
 
@@ -48,12 +43,12 @@ Die neuste Entwicklung ist das instrumentierte Fuzzing (engl. coverage guided fu
 
 Diese Methode setzt natürlich voraus, dass man die Codeausführung beobachten kann. Wenn der Quellcode verfügbar ist, wird dies meist durch spezielle eingefügte Instruktionen erreicht. Natürlich ist auch die Verwendung eines Debuggers möglich. Der generelle Vorteil ist eine hohe Effizienz, da nur Bytes verändert werden, die einen Einfluss auf den Programmablauf haben. Dadurch wird außhifferdem eine hohe Code-Abdeckung erreicht. Nachteil ist eine geringere Performance, entweder durch die zusätzlichen Instruktionen oder durch den Debugger. Dieser Performancenachteil darf dabei nicht größer werden als die verbesserte Effizienz, da sonst die Gesamtzahl an gefunden Fehlern im Programm sinkt.
 
-Ein weiterer Vorteil ist die Möglichkeit der Testkorpus- und Testfallminimierung. Bei der Minimierung des Testkorpus werden alle Testdaten zusammengefasst, bei deren Verarbeitung die gleichen Codezweige durchlaufen werden. Die Testfallminimierung verringert die Größe der einzelnen Testdaten, sodass eine möglichst kleiner Datensatz erzeugt wird, bei dessen Verarbeitung trotzdem diesselben Codepfade durchlaufen werden wie beim ursprünglichen, großen Datensatz. Beide Methoden führen zu einer höheren Performance und Effizienz bei den nächsten Fuzzing-Tests.
+Ein weiterer Vorteil ist die Möglichkeit der Testkorpus- und Testfallminimierung. Bei der Minimierung des Testkorpus werden alle Testdaten zusammengefasst, bei deren Verarbeitung die gleichen Codezweige durchlaufen werden. Die Testfallminimierung verringert die Größe der einzelnen Testdaten, sodass eine möglichst kleiner Datensatz erzeugt wird, bei dessen Verarbeitung trotzdem diesselben Codepfade durchlaufen werden wie beim ursprünglichen, großen Datensatz. Beide Methoden führen zu einer höheren Performance und Effizienz bei den nächsten Fuzzing-Tests. Außerdem ermöglicht die Testfallminimierung ein vereinfachtes Finden des zugrundeliegenden Fehlers im Code.
 
 * Tools: [`AFL`](http://lcamtuf.coredump.cx/afl/), [`libFuzzer`](https://llvm.org/docs/LibFuzzer.html), [`honggfuzz`](https://github.com/google/honggfuzz)
 
 
-Die Mächtigkeit des instrumentierten Fuzzing zeigt sich an einem Beispiel. Für das Fuzzing einer Bildbibliothek wurde als einziger Testfall eine Textdatei mit dein Inhalt `hello` genommen. Wenn dann das Fuzzing begonnen wird, werden nach und nach die Bytes so verändert, dass neue Codezweige erreicht werden und es nach und nach die Strukturen des Bildformates erhält. Nach einiger Zeit des Fuzzens wird dann sogar ein komplettes valides Bild erzeugt.
+Die Mächtigkeit des instrumentierten Fuzzing zeigt sich an einem Beispiel. Für das Fuzzing einer Bildbibliothek wurde als einziger Testfall eine Textdatei mit dem Inhalt `hello` genommen. Wenn dann das Fuzzing begonnen wird, werden nach und nach die Bytes so verändert, dass neue Codezweige erreicht werden. Dadurch werden nach und nach die Strukturen des Bildformates erstellt. Nach einiger Zeit des Fuzzens wird dann sogar ein komplettes valides Bild erzeugt. Eine Auswahl erzeugter Bilder ist in folgendem Bild zu sehen.
 [![Erzeugung valider Bilder beim instrumentierten Fuzzing einer Bildbibliothek](https://lh6.googleusercontent.com/proxy/-6MjaR00hYA40HOvCaSW4PF_TvPpqAjNZIwGadsPVaYE9hRrGNTi91BBKlVdXtK4X7E5qf9hgk6kHMrxWaE-WaCckCsgZzA=s0-d "Erzeugung valider Bilder beim instrumentierten Fuzzing einer Bildbibliothek")](https://lcamtuf.blogspot.com/2014/11/pulling-jpegs-out-of-thin-air.html)
 
 
@@ -90,24 +85,24 @@ $
 
 
 ### Sanitizer
-Bestimmte Fehler in Programmen führen nicht oder nicht sofort zu einem Absturz. So kann ein Speicherfehler durch eine fehlerhaften Schreibvorgang erst nach vielen anderen Befehlen zu einem Absturz führen. Oder es wird nur ein sehr kleiner Teil des Speichers beschädigt, sodass nur unter sehr speziellen Umständen das Programm abstürzt. 
+Bestimmte Fehler in Programmen führen nicht oder nicht sofort zu einem Absturz. So kann ein Speicherfehler durch einen fehlerhaften Schreibvorgang erst nach vielen anderen Befehlen zu einem Absturz führen. Oder es wird nur ein sehr kleiner Teil des Speichers beschädigt, sodass nur unter sehr speziellen Umständen das Programm abstürzt. 
 
-Eine Lösung für dieses Problem ist die Verwendung eines Sanitizers. Dieser fügt beim Kompilieren zusätzliche Instruktionen ein, um die Befehle zur Laufzeit zu prüfen. Beispielsweise kann vor jedem Speicherzugriff eine Überprüfung erfolgen, ob tatsächlich auf diesen Speicher zugegriffen werden darf. Ein Nachteil ist die verringerte Performance und der erhöhte Speicherbedarf, die sich beide um den Faktor zwei oder noch stärker verschlechtern können. Da aber beim Fuzzing deutlich mehr Fehler gefunden werden können, ist es trotzdem sinnvoll Sanitizer zu verwenden.
+Eine Lösung für dieses Problem ist die Verwendung eines Sanitizers. Dieser fügt beim Kompilieren zusätzliche Instruktionen ein, um die Befehle zur Laufzeit zu prüfen. Beispielsweise kann vor jedem Speicherzugriff eine Überprüfung erfolgen, ob tatsächlich auf diesen Speicher zugegriffen werden darf. Ein Nachteil ist die verringerte Performance und der erhöhte Speicherbedarf, die sich beide um den Faktor zwei oder noch stärker verschlechtern können. Da aber beim Fuzzing mit aktivierten Sanitizer deutlich mehr Fehler gefunden werden können, ist es trotzdem sinnvoll Sanitizer zu verwenden.
 
 Es wurden verschiedene Sanitizer entwickelt, diese sind aber teilweise nicht für alle Compiler verfügbar. In der folgenden Tabelle ist eine Übersicht über die verschiedenen Sanitizer, deren erkannten Fehlerklassen und welche Compiler diese unterstützen. 
 
 
 | Sanitizer   | Fehlerklassen    | Compiler    |
 | ----------- | ---------------- | ----------- |
-| AddressSanitizer (ASan) | Out-of-bounds accesses, Use-after-free, Use-after-return, Use-after-scope, Double-free, invalid free | gcc, clang |
-| UndefinedBehaviorSanitizer (UBSan)| Using misaligned or null pointer, igned integer overflow, overflowing conversions with floating-point types | gcc, clang |
-| MemorySanitizer | Lesen von uninitialisiertem Speicher | clang |
+| [AddressSanitizer (ASan)](https://github.com/google/sanitizers/wiki/AddressSanitizer) | Out-of-bounds accesses, Use-after-free, Use-after-return, Use-after-scope, Double-free, invalid free | gcc, clang |
+| [UndefinedBehaviorSanitizer (UBSan)](https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html)| Using misaligned or null pointer, igned integer overflow, overflowing conversions with floating-point types | gcc, clang |
+| [MemorySanitizer (MSan)](https://github.com/google/sanitizers/wiki/MemorySanitizer) | Lesen von uninitialisiertem Speicher | clang |
 | LeakSanitizer | Memory leaks | gcc, clang |
 | ThreadSanitizer (TSan) | Data races | gcc, clang |
     
   
 #### Demonstration Address Sanitizers:
-Um die Funktion von Address Sanitizern zu zeigen, ist hier folgendes Beispielprogramm gegeben. Es liest eine Zeichenkette aus `stdin` und kopiert diese in einen 16 Byte großen Buffer. Da keine Überprüfung der Länge der Eingabe erfolgt, werden auch Zeichenketten länger als 16 Bytes in den Buffer kopiert, sodass es zu einem Buffer Overflow kommt. 
+Um die Funktion von Address Sanitizern zu zeigen, ist im folgende ein Beispielprogramm gegeben. Es liest eine Zeichenkette aus der Standardeingabe `stdin` und kopiert diese in einen 16 Byte großen Buffer. Da keine Überprüfung der Länge der Eingabe erfolgt, werden auch Zeichenketten länger als 16 Bytes in den Buffer kopiert. Dies führt zu einem Buffer Overflow: 
 
 ```c
 #include <stdio.h>
@@ -127,7 +122,7 @@ int main(int argc, char *argv[]) {
 }
 ```
 
-Wenn dieses Programm kompiliert und ausgeführt wird, kommt es bei einem Buffer Overflow nicht sofort zum Absturz. Beim Kopieren der Eingabedaten werden einfach die Daten überschrieben. Erst bei einer deutliche längeren Zeichenkette kommt es zu einer Beschädigung des Speichers sodass das Programm abstürzt.
+Wenn dieses Programm kompiliert und ausgeführt wird, kommt es bei einem Buffer Overflow nicht sofort zum Absturz. Beim Kopieren der Eingabedaten werden einfach die Daten hinter dem Buffer überschrieben, diese sind aber nicht sofort für den Programmablauf relevant. Erst bei einer deutliche längeren Zeichenkette kommt es zu einer Beschädigung des Speichers, sodass das Programm abstürzt.
 
 ```console
 $ gcc -o buffer_overflow buffer_overflow.c
@@ -140,7 +135,7 @@ running strcpy...
 *** stack smashing detected ***: <unknown> terminated
 ```
 
-Sobald aber das Programm mit dem Address Sanitizer kompiliert wird, wird sofort bei einem Überschreiten der zulässigen Zeichenlänge ein Fehler ausgegeben und die Programmausführung stoppt.
+Sobald das Programm mit dem Address Sanitizer kompiliert wird, wird sofort bei einem Buffer Overflow und Überschreiten der zulässigen Zeichenlänge ein Fehler ausgegeben und die Programmausführung stoppt.
 
 ```console
 $ gcc -o buffer_overflow -fsanitize=address buffer_overflow.c
@@ -154,29 +149,30 @@ running strcpy...
 
 
 ### Tipps und Ratschläge
-In der Praxis muss immer zwischen Fuzzing-Geschwindigkeit und Effizienz abgewogen werden. Zum Ziel einer möglichst großen Anzahl an gefunden Fehler muss das Programm möglichst oft mit unterschiedlichen Daten ausgeführt werden. Gleichzeitig müssen die unterschiedlichen Daten möglichst oft zu einem fehlerhaften Programmverhalten führen. So ist unter Umständen ein dummer, aber dafür schneller Fuzzer besser als ein sehr intelligenter, dafür aber langsamer Fuzzer. 
+In der Praxis muss immer zwischen Fuzzing-Geschwindigkeit und Fuzzing-Effizienz abgewogen werden. Zum Ziel einer möglichst großen Anzahl an gefundenen Fehlern, muss das Programm möglichst oft mit unterschiedlichen Daten ausgeführt werden. Gleichzeitig müssen die unterschiedlichen Daten möglichst oft zu einem fehlerhaften Programmverhalten führen. So ist unter Umständen ein dummer, aber dafür schneller Fuzzer besser als ein sehr intelligenter, dafür aber langsamer Fuzzer. 
 
-Des weiteren sollte man immer Sanitizer verwenden, falls der Quellcode zur Verfügung steht. Dadurch können deutlich mehr Fehler gefunden werden. So wurde beispielsweise beim Kompilieren und darauffolgenden Benutzen eines kompletten Linux-Systems (Gentoo) mit aktivierten Address Sanitizer Fehler in fast allen verwendeten Programmen gefunden [[Böck, Hanno. Improving security with Fuzzing and Sanitizers. Konferenzvortrag SHA 2017](https://media.ccc.de/v/SHA2017-148-improving_security_with_fuzzing_and_sanitizers#t=593)].
+Des weiteren sollte man immer Sanitizer verwenden, falls der Quellcode zur Verfügung steht. Dadurch können deutlich mehr Fehler gefunden werden. So wurde beispielsweise beim Kompilieren und darauffolgenden Benutzen eines kompletten Gentoo-Linux-Systems  mit aktivierten Address Sanitizer Fehler in fast allen verwendeten Programmen gefunden, u.a. in bash, man-db, screen, claws-mail, dovecot, glib, Gnome, QT, KDE, libarchive und lvm2 [[Böck, Hanno. Improving security with Fuzzing and Sanitizers. Konferenzvortrag SHA 2017](https://media.ccc.de/v/SHA2017-148-improving_security_with_fuzzing_and_sanitizers#t=593)].
 
-Die Verwendung von Prüfsummen oder kryptografische Signaturen erschwert das Fuzzing. So werden beim Mutieren der Daten die Prüfsummen ungültig, das Programm überprüft und erkennt die ungültigen Daten und bricht die Verarbeitung ab. Daher sollten solche Elemente entweder im Quellcode deaktiviert werden oder die mutierten Daten müssen eine Nachverarbeitungsschritt durchlaufen, bei dem die Checksumme für die mutierten Daten neu berechnet wird.
+Die Verwendung von Prüfsummen oder kryptografische Signaturen erschwert Fuzzing. So werden beim Mutieren der Daten die Prüfsummen ungültig, das Programm überprüft und erkennt die ungültigen Daten und bricht die Verarbeitung ab. Daher sollten solche Elemente entweder im Quellcode deaktiviert werden oder die mutierten Daten müssen eine Nachverarbeitungsschritt durchlaufen, bei dem die Checksumme für die mutierten Daten neu berechnet wird.
 
 
 ## Tools
 ### AFL und libFuzzer
-Zwei sehr populäre Fuzzing-Tools sind aktuell der von Michal Zalewski entwickelte Fuzzer american fuzzy lob, kurz AFL, sowie der von der LLVM-Community gepflegte libFuzzer. Beide erreichen durch das instrumentieren des Codes eine hohe Effizienz und hohe Code-Abdeckung. Mit beiden wurden hunderte Fehler gefunden und die Heartbleed getaufte Lücke in der OpenSSL-Bibliothek hätte durch Fuzzing in Verbindung mit Sanitizern gefunden werden können. 
+Zwei sehr populäre Fuzzing-Tools sind der von Michal Zalewski entwickelte Fuzzer american fuzzy lob, kurz [AFL](http://lcamtuf.coredump.cx/afl/), sowie der von der LLVM-Community gepflegte [libFuzzer](http://llvm.org/docs/LibFuzzer.html). Beide erreichen durch das instrumentieren des Codes eine hohe Effizienz sowie Code-Abdeckung. Mit beiden wurden hunderte Fehler gefunden und die Heartbleed getaufte Lücke in der OpenSSL-Bibliothek hätte durch Fuzzing in Verbindung mit Sanitizern gefunden werden können [[Böck, Hanno, 2015. How Heartbleed could've been found](https://blog.hboeck.de/archives/868-How-Heartbleed-couldve-been-found.html)]. 
 
-AFL und libFuzzer unterscheiden sich in mehreren Details: AFL ermöglicht einen sehr schnellen und simplen Einstieg, nach wenigen Minuten kann man einen ersten Fuzzing-Durchlauf starten. So wird der Testkorpus ausgelesen und über `stdin` oder der Dateiname direkt an das Programm übergeben. Man kann auf unterschiedlichen Wegen ein Feedback über die Programmausführung erhalten: entweder durch Neu-Kompilieren und dem Einfügen von Instrumentationsbefehlen oder durch das Versehen von Binaries zur Laufzeit mit diesen Befehlen. Standardmäßig wird für jeden einzelnen Programmdurchlauf ein neuer Prozess gestartet, durch Anpassungen des Codes ist aber auch In-Prozess-Fuzzing möglich.
+AFL und libFuzzer unterscheiden sich in mehreren Details: AFL ermöglicht einen sehr schnellen und simplen Einstieg, nach wenigen Minuten kann man einen ersten Fuzzing-Durchlauf starten. So werden die Dateien im  Testkorpus per `stdin` oder als Dateiname  an das Programm übergeben. Standardmäßig kompiliert man das Programm neu mit eingefügten Instrumentationsbefehlen. Alternativ kann man ein vorhandenes Binary zur Laufzeit mit diesen Befehlen versehen und dadurch ein Feedback der Programmausführung erhalten, diese Methode ist aber typischerweise zwei- bis fünfmal langsamer. In der Grundkonfiguration wird für jeden einzelnen Programmdurchlauf ein neuer Prozess gestartet, durch Anpassungen des Codes ist aber auch In-Prozess-Fuzzing möglich. Dabei wird kein neuer Prozess erzeugt, sondern die Daten direkt im Speicher verändert.
 
-Zum initialen Aufsetzen von libFuzzer benötigt man etwas mehr Zeit, da man zuerst ein kleines Helferprogramm schreiben und kompilieren muss, welche die generierten Daten des Fuzzers nimmt und das Programm damit aufruft. Die Kompilation muss dabei mit dem Compiler `clang` erfolgen. Da standardmäßig In-Prozess-Fuzzing ausgeführt wird, ist die Fuzzinggeschwindigkeit höher im Vergleich zu AFL.
+Zum initialen Aufsetzen von libFuzzer benötigt man etwas mehr Zeit, da man zuerst ein kleines Helferprogramm schreiben und kompilieren muss, welche die generierten Daten des Fuzzers annimmt, ggf. korrekt formatiert und das Programm damit aufruft. Die Kompilation muss dabei mit dem Compiler `clang` erfolgen. Da standardmäßig In-Prozess-Fuzzing ausgeführt wird, ist die Fuzzinggeschwindigkeit höher im Vergleich zu AFL.
 
-Im [Anhang](#anhang) sind für beide Tools Schnelleinführungen gegeben, mit denen man diese Tools ausprobieren kann.
+Im [Anhang](#anhang) sind für beide Tools Schnelleinführungen gegeben, die ein einfaches Ausprobieren ermöglichen.
 
 ### Kernel Fuzzer
-Da weder AFL noch libFuzzer das Fuzzing von Kerneln erlauben, wurde andere Tools entwickelt, um  dieses durchzuführen. So ist für Linux-Kernel-Fuzzing [`trinity` ](https://github.com/kernelslacker/trinity) weit verbreitet, welches alle Syscalls fuzzt. Dabei werden keine komplett zufälligen Daten verwendet, sondern die jeweils richtigen Datentypen übergeben, beispielsweise Pointer, Adressen oder Dateihandler. 
+Da weder AFL noch libFuzzer das Fuzzing von Kerneln erlauben, wurde andere Tools entwickelt, um  dieses durchzuführen. So ist für Linux-Kernel-Fuzzing [`trinity` ](https://github.com/kernelslacker/trinity) weit verbreitet, welches Syscalls sowie ioctls fuzzt. Dabei werden keine komplett zufälligen Daten verwendet, sondern die jeweils richtigen Datentypen übergeben, beispielsweise Pointer, Adressen oder Dateihandler. 
 
-Daneben gibt es das von Google entwickelte Tool [`syzkaller`](https://githu.com/google/syzkaller), welches instrumentiertes Fuzzing von Kernel erlaubt. Verschiedene Kernel werden unterstützt, neben Linux- unter anderem auch FreeBSD, NetBSD und Windows-Kernel, mit jeweils unterschiedlich guter Unterstützung.
+Daneben gibt es das von Google entwickelte Tool [`syzkaller`](https://githu.com/google/syzkaller), welches im Gegensatz zu trinity instrumentiertes Kernel-Fuzzing ermöglicht. Verschiedene Kernel werden unterstützt, neben Linux- unter anderem auch FreeBSD, NetBSD und Windows-Kernel, mit jeweils unterschiedlich guter Unterstützung.
 
-Da durch das Fuzzing potenziell ungewollte Seiteneffekte wie das Löschen von Dateien auftreten können, sollte es nicht auf einem Produktivsystem durchgeführt werden. Syzkaller verwendet dazu standardmäßig virtuelle Maschinen (mittels `qemu`).
+Da durch Betriebssystem-Fuzzing potenziell ungewollte Seiteneffekte wie das Löschen von Dateien auftreten können, sollte es nicht auf einem Produktivsystem durchgeführt werden. Syzkaller verwendet dazu standardmäßig virtuelle Maschinen (mittels `qemu`). Außerdem sollten aus diesem Grund keine Netzlaufwerke eingebunden sein. Zusätzlich sollten die Rechner nicht mit dem Internet verbunden sein, da invalide Pakete an zufällige IP-Addressen gesendet werden können, wodurch diese abstürzen könnten.
+
 Der Linux-Kernel unterstützt Sanitizer, darum sollte sowohl mit dem [Kernel Address Sanitizer (KASAN)](https://www.kernel.org/doc/html/latest/dev-tools/kasan.html) als auch mit dem [Undefined Behavior Sanitizer (UBSAN)](https://www.kernel.org/doc/html/latest/dev-tools/ubsan.html) gefuzzt werden.
 
 
@@ -194,27 +190,28 @@ Um die Prozessor- bzw. CPU-Instruktionen zu überprüfen, wurde das Tool [`Sands
 
 ### [Schnelleinführung libFuzzer](http://llvm.org/docs/LibFuzzer.html#getting-started)
 * Implementierung des Helferprogramms: 
-```c++
-// fuzz_target.cc
-extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
-  DoSomethingInterestingWithMyAPI(Data, Size);
-  return 0;  // Non-zero return values are reserved for future use.
-}
-```
+  ```c++
+  // fuzz_target.cc
+  extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
+    DoSomethingInterestingWithMyAPI(Data, Size);
+    return 0;  // Non-zero return values are reserved for future use.
+  }
+  ```
 * Kompilierung: `clang -fsanitize=fuzzer -o my_fuzzer fuzz_target.cc`
 * Ausführung ohne Testkorpus: `./my_fuzzer`, mit Testkorpus: `./my_fuzzer -i testcorpus_directory`  
 
 
 
 # Literatur
-* TAKANEN, Ari, Jared DEMOTT und Charlie MILLER, 2008. Fuzzing for software security testing and quality assurance. Boston: Artech House. ISBN 978-1-596-93214-2
-* LIANG, H. und andere, 2018. Fuzzing: State of the Art. In: IEEE Transactions on Reliability [online], vol. 67, no. 3, S. 1199-1218 [Zugriff am: 18.12.2018]. IEEE Xplore Digital Library. ISSN 1558-1721. Verfügbar unter: DOI: [10.1109/TR.2018.2834476](http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8371326&isnumber=8452065)
-*  MILLER, Barton P. und andere, 1990. An Empirical Study of the Reliability of UNIX Utilities. In:  Communications of the ACM [online]. 33, S. 32-44 [Zugriff am: 20.12.2018]. ACM Digital Library. ISSN 0001-0782. Verfügbar unter: [DOI: 10.1145/96267.96279 ](https://dl.acm.org/citation.cfm?doid=96267.96279). 
+*  Takanen, Ari; DeMott, Jared; Miller, Charlie, 2008. Fuzzing for software security testing and quality assurance. Boston: Artech House. ISBN 978-1-596-93214-2
+* Liang, Hongliang; Pei, Xiaoxiao; Jia, Xiaodong; Shen, Wuwei; Zhang, Jian, 2018. Fuzzing: State of the Art. In: IEEE Transactions on Reliability [online], vol. 67, no. 3, S. 1199-1218 [Zugriff am: 18.12.2018]. IEEE Xplore Digital Library. ISSN 1558-1721. Verfügbar unter: DOI: [10.1109/TR.2018.2834476](http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8371326&isnumber=8452065)
+* Miller, Barton P.; Fredriksen, Louis; So, Bryan, 1990. An Empirical Study of the Reliability of UNIX Utilities. In:  Communications of the ACM [online]. 33, S. 32-44 [Zugriff am: 20.12.2018]. ACM Digital Library. ISSN 0001-0782. Verfügbar unter: [DOI: 10.1145/96267.96279 ](https://dl.acm.org/citation.cfm?doid=96267.96279). 
 Alternative Quelle: [Website des Autors](http://ftp.cs.wisc.edu/paradyn/technical_papers/fuzz.pdf)
-* BÖCK, Hanno, 2017. [Improving security with Fuzzing and Sanitizers](#improving-security-with-fuzzing-and-sanitizers): Free and open source software has far too many security critical bugs [Konferenzvortrag]. Konferenz: Still Hacking Anyway (SHA) 2017. Verfügbar unter: https://media.ccc.de/v/SHA2017-148-improving_security_with_fuzzing_and_sanitizers
-* RANDOM, Jack, 2015: Fuzzing [Konferenzvortrag]. Konferenz: Cryptocon 2015. Verfügbar unter: https://media.ccc.de/v/CC15_-_20_-__-_lounge_-_201505101900_-_fuzzing_-_jack_random
-* NAGY, Ben, 2012. Windows Kernel Fuzzing For Beginners [Konferenzvortrag]. Konferenz: Ruxcon 2012. Verfügbar unter: https://www.youtube.com/watch?v=FY-33TUKlqY
-* The OWASP Foundation. Fuzzing. Zugriff am: 03.01.2019. Verfügbar unter: https://www.owasp.org/index.php/Fuzzing
-* The OWASP Foundation. Fuzz Vectors. Zugriff am: 03.01.2019. Verfügbar unter: https://www.owasp.org/index.php/OWASP_Testing_Guide_Appendix_C:_Fuzz_Vectors
-* MWR InfoSecurity. 15 minute guide to fuzzing. Zugriff am: 04.01.2019. Verfügbar unter: https://www.mwrinfosecurity.com/our-thinking/15-minute-guide-to-fuzzing/
-* ZALEWSKI, Michal, 2014. Binary fuzzing strategies: what works, what doesn't. Zugriff am: 04.01.2019. Verfügbar unter: https://lcamtuf.blogspot.com/2014/08/binary-fuzzing-strategies-what-works.html
+* [Böck, Hanno, 2017. Improving security with Fuzzing and Sanitizers: Free and open source software has far too many security critical bugs [Konferenzvortrag]. Still Hacking Anyway (SHA) 2017](https://media.ccc.de/v/SHA2017-148-improving_security_with_fuzzing_and_sanitizers)
+* Random, Jack, 2015: Fuzzing [Konferenzvortrag]. Konferenz: Cryptocon 2015. Verfügbar unter: https://media.ccc.de/v/CC15_-_20_-__-_lounge_-_201505101900_-_fuzzing_-_jack_random
+* [Nagy, Ben, 2012. Windows Kernel Fuzzing For Beginners [Konferenzvortrag]. Ruxcon 2012](https://www.youtube.com/watch?v=FY-33TUKlqY)
+* [The OWASP Foundation. Fuzzing (Zugriff am: 03.01.2019)](https://www.owasp.org/index.php/Fuzzing)
+* [The OWASP Foundation. Fuzz Vectors (Zugriff am: 03.01.2019)](https://www.owasp.org/index.php/OWASP_Testing_Guide_Appendix_C:_Fuzz_Vectors)
+* [MWR InfoSecurity. 15 minute guide to fuzzing (Zugriff am: 04.01.2019)](https://www.mwrinfosecurity.com/our-thinking/15-minute-guide-to-fuzzing/)
+* [Zalewski, Michal, 2014. Binary fuzzing strategies: what works, what doesn't (Zugriff am: 04.01.2019)](https://lcamtuf.blogspot.com/2014/08/binary-fuzzing-strategies-what-works.html)
+* [Abhishek Arya, 2015. Clusterfuzz [Konferenzvortrag]. nullcon Goa 2015](https://www.youtube.com/watch?v=zeUJSm8WZ_g) [Präsentationsfolien](https://nullcon.net/website/archives/ppt/goa-15/analyzing-chrome-crash-reports-at-scale-by-abhishek-arya.pdf)
