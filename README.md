@@ -58,15 +58,12 @@ Die Mächtigkeit des instrumentierten Fuzzing zeigt sich an einem Beispiel. Für
 ### Datenmutation
 Das vollständige Verändern aller Bytes mit allen Möglichkeiten ist nicht machbar. So gibt es bei einem 32-Bit Wert 2^32 Möglichkeiten, was viele Tage dauern würde zu fuzzen. Aus diesem Grund muss man den Suchraum einschränken. So werden die Bits nur geflippt oder geshifftet und bei Zahlen Werte dazu addiert und subtrahiert. Außerdem kann man die Zahlen und Zeichenketten durch interesante Werte ersetzen, beispielsweise 0, 1, -1, die maximale und minimale Zahl des Zahlenbereichs, bei Gleitkommazahlen die speziellen Werte `NaN` oder `-Inf` und um Speicherfehler zu erkennen typische Buffergrößen wie 16, 32 oder 128. Interessante Zeichenketten sind beispielsweise komplett leere oder sehr lange Zeichenketten (`''`, `128*'a'`), spezielle Bytes und Zeichen wie `\0` als Ende von Zeichenketten in C oder `\n` als Zeilenumbruch oder Formatierungsbefehle wie `s%s%s%s` oder `%x %x %x` für die Funktion `printf`, die Format String-Angriffe ermöglichen.
 
+Demonstration zufälliger Bit-Flips und Byte-Ersetzungen mittels `zzuf`:
 
-
-
-Demonstration zufälliger Bit-Flips und Byte-Ersetzungen mittel `zzuf`:
-
-![](https://github.com/ketograph/fuzzing-vortrag/blob/master/images/zzuf1.png "Unveränderter Text")
-
-![](https://github.com/ketograph/fuzzing-vortrag/blob/master/images/zzuf2.png "Manipulierter Text")
-    
+| Ausgangstext   | mutierter Text    | 
+| -------------- | ----------------- |
+|![](https://github.com/ketograph/fuzzing-vortrag/blob/master/images/zzuf1.png "Unveränderter Text") | ![](https://github.com/ketograph/fuzzing-vortrag/blob/master/images/zzuf2.png "Manipulierter Text") |
+ 
 Datenmanipulation mittels `radamsa`
 
 ![](https://github.com/ketograph/fuzzing-vortrag/blob/master/images/radamsa.png "Manipulierter Text")
@@ -81,10 +78,10 @@ Es wurden verschiedene Sanitizer entwickelt, diese sind aber teilweise nicht fü
 | Sanitizer   | Fehlerklassen    | Kompiler    |
 | ----------- | ---------------- | ----------- |
 | AddressSanitizer (ASan) | Out-of-bounds accesses, Use-after-free, Use-after-return, Use-after-scope, Double-free, invalid free | gcc, clang |
-| UndefinedBehaviorSanitizer (UBSan)| (divide by zero, integer overflow),    Using misaligned or null pointer,    Signed integer overflow,    Conversion to, from, or between floating-point types which would overflow the destination | gcc, clang |
+| UndefinedBehaviorSanitizer (UBSan)| Using misaligned or null pointer, igned integer overflow, overflowing conversions with floating-point types | gcc, clang |
 | MemorySanitizer | Lesen von uninitialisiertem Speicher | clang |
 | LeakSanitizer | Memory leaks | gcc, clang |
-| ThreadSanitizer (TSan) | Data races| gcc, clang |
+| ThreadSanitizer (TSan) | Data races | gcc, clang |
     
   
 #### Demonstration Address Sanitizers:
@@ -150,16 +147,18 @@ Zum initilen Aufsetzen von libFuzzer benötigt man etwas mehr Zeit, da man zuers
 
 
 #### [Quickstart AFL](http://lcamtuf.coredump.cx/afl/QuickStartGuide.txt)
-* Kompilierung:  `CC=afl-gcc ./configure --disable-shared` 
-* Ausführung: `afl-fuzz [...] ./programm_to_fuzz`  
+* Kompilierung:  `CC=afl-gcc ./configure --disable-shared` oder `afl-gcc -static -o programm_to_fuzz programm_to_fuzz.c`
+* Start: `afl-fuzz -i testcase_directory -o crashing_files ./programm_to_fuzz` 
 
 #### [Quickstart libFuzzer](http://llvm.org/docs/LibFuzzer.html#getting-started)
-* Implementierung des Helferprogramms: [![](https://github.com/ketograph/fuzzing-vortrag/blob/master/images/libfuzzer_quickstart.png "Fuzzing Ziel erstellen")](http://llvm.org/docs/LibFuzzer.html#id22) 
-* Kompilierung: `clang -fsanitize=fuzzer fuzz_target.c`   
-* Ausführung: `./a.out [...]`  
+* Implementierung des Helferprogramms: [![Code zum Erstellen eines Fuzzers mittels libFuzzer](https://github.com/ketograph/fuzzing-vortrag/blob/master/images/libfuzz-quickstart.png "Fuzzing Ziel erstellen")](http://llvm.org/docs/LibFuzzer.html#id22) 
+* Kompilierung: `clang -fsanitize=fuzzer -o my_fuzzer fuzz_target.cc`   
+* Ausführung: `./my_fuzzer [...]`  
   
+
+
 ### Kernel Fuzzer
-* [`syzkaller`](https://github.com/google/syzkaller)
+* [`syzkaller`](https://githu.com/google/syzkaller)
   * Entwicklung durch Google
   * Instrumentiertes Fuzzing
   * Start des Systems in VM und Fuzzing der Syscalls
