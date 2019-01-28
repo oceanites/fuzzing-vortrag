@@ -203,15 +203,15 @@ Um die Prozessor- bzw. CPU-Instruktionen zu überprüfen, wurde das Tool [`Sands
 
 
 # Literatur
-*  Takanen, Ari; DeMott, Jared; Miller, Charlie, 2008. Fuzzing for software security testing and quality assurance. Boston: Artech House. ISBN 978-1-596-93214-2
-* Liang, Hongliang; Pei, Xiaoxiao; Jia, Xiaodong; Shen, Wuwei; Zhang, Jian, 2018. Fuzzing: State of the Art. In: IEEE Transactions on Reliability [online], vol. 67, no. 3, S. 1199-1218 [Zugriff am: 18.12.2018]. IEEE Xplore Digital Library. ISSN 1558-1721. Verfügbar unter: DOI: [10.1109/TR.2018.2834476](http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8371326&isnumber=8452065)
-* Miller, Barton P.; Fredriksen, Louis; So, Bryan, 1990. An Empirical Study of the Reliability of UNIX Utilities. In:  Communications of the ACM [online]. 33, S. 32-44 [Zugriff am: 20.12.2018]. ACM Digital Library. ISSN 0001-0782. Verfügbar unter: [DOI: 10.1145/96267.96279 ](https://dl.acm.org/citation.cfm?doid=96267.96279). 
+*  Takanen, Ari; DeMott, Jared; Miller, Charlie, 2008. __Fuzzing for software security testing and quality assurance__. Boston: Artech House. ISBN 978-1-596-93214-2
+* Liang, Hongliang; Pei, Xiaoxiao; Jia, Xiaodong; Shen, Wuwei; Zhang, Jian, 2018. __Fuzzing: State of the Art__. In: IEEE Transactions on Reliability [online], vol. 67, no. 3, S. 1199-1218 [Zugriff am: 18.12.2018]. IEEE Xplore Digital Library. ISSN 1558-1721. Verfügbar unter: DOI: [10.1109/TR.2018.2834476](http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8371326&isnumber=8452065)
+* Miller, Barton P.; Fredriksen, Louis; So, Bryan, 1990. __An Empirical Study of the Reliability of UNIX Utilities__. In:  Communications of the ACM [online]. 33, S. 32-44 [Zugriff am: 20.12.2018]. ACM Digital Library. ISSN 0001-0782. Verfügbar unter: [DOI: 10.1145/96267.96279 ](https://dl.acm.org/citation.cfm?doid=96267.96279). 
 Alternative Quelle: [Website des Autors](http://ftp.cs.wisc.edu/paradyn/technical_papers/fuzz.pdf)
-* [Böck, Hanno, 2017. Improving security with Fuzzing and Sanitizers: Free and open source software has far too many security critical bugs [Konferenzvortrag]. Still Hacking Anyway (SHA) 2017](https://media.ccc.de/v/SHA2017-148-improving_security_with_fuzzing_and_sanitizers)
-* Random, Jack, 2015: Fuzzing [Konferenzvortrag]. Konferenz: Cryptocon 2015. Verfügbar unter: https://media.ccc.de/v/CC15_-_20_-__-_lounge_-_201505101900_-_fuzzing_-_jack_random
-* [Nagy, Ben, 2012. Windows Kernel Fuzzing For Beginners [Konferenzvortrag]. Ruxcon 2012](https://www.youtube.com/watch?v=FY-33TUKlqY)
-* [The OWASP Foundation. Fuzzing (Zugriff am: 03.01.2019)](https://www.owasp.org/index.php/Fuzzing)
-* [The OWASP Foundation. Fuzz Vectors (Zugriff am: 03.01.2019)](https://www.owasp.org/index.php/OWASP_Testing_Guide_Appendix_C:_Fuzz_Vectors)
-* [MWR InfoSecurity. 15 minute guide to fuzzing (Zugriff am: 04.01.2019)](https://www.mwrinfosecurity.com/our-thinking/15-minute-guide-to-fuzzing/)
-* [Zalewski, Michal, 2014. Binary fuzzing strategies: what works, what doesn't (Zugriff am: 04.01.2019)](https://lcamtuf.blogspot.com/2014/08/binary-fuzzing-strategies-what-works.html)
-* [Abhishek Arya, 2015. Clusterfuzz [Konferenzvortrag]. nullcon Goa 2015](https://www.youtube.com/watch?v=zeUJSm8WZ_g) [Präsentationsfolien](https://nullcon.net/website/archives/ppt/goa-15/analyzing-chrome-crash-reports-at-scale-by-abhishek-arya.pdf)
+* Böck, Hanno, 2017. __Improving security with Fuzzing and Sanitizers: Free and open source software has far too many security critical bugs__ [Konferenzvortrag]. Still Hacking Anyway (SHA) 2017. Verfügbar unter: https://media.ccc.de/v/SHA2017-148-improving_security_with_fuzzing_and_sanitizers
+* Random, Jack, 2015: __Fuzzing__ [Konferenzvortrag]. Konferenz: Cryptocon 2015. Verfügbar unter: https://media.ccc.de/v/CC15_-_20_-__-_lounge_-_201505101900_-_fuzzing_-_jack_random
+* Nagy, Ben, 2012. __Windows Kernel Fuzzing For Beginners__ [Konferenzvortrag]. Ruxcon 2012. Verfügbar unter: https://www.youtube.com/watch?v=FY-33TUKlqY
+* [The OWASP Foundation. __Fuzzing__](https://www.owasp.org/index.php/Fuzzing) (Zugriff am: 03.01.2019)
+* [The OWASP Foundation. __Fuzz Vectors__](https://www.owasp.org/index.php/OWASP_Testing_Guide_Appendix_C:_Fuzz_Vectors) (Zugriff am: 03.01.2019)
+* [MWR InfoSecurity. __15 minute guide to fuzzing__](https://www.mwrinfosecurity.com/our-thinking/15-minute-guide-to-fuzzing/) (Zugriff am: 04.01.2019)
+* [Zalewski, Michal, 2014. __Binary fuzzing strategies: what works, what doesn't__](https://lcamtuf.blogspot.com/2014/08/binary-fuzzing-strategies-what-works.html) (Zugriff am: 04.01.2019)
+* Abhishek Arya, 2015. __Clusterfuzz__ [Konferenzvortrag]. nullcon Goa 2015. Verfügbar unter: https://www.youtube.com/watch?v=zeUJSm8WZ_g ([Präsentationsfolien](https://nullcon.net/website/archives/ppt/goa-15/analyzing-chrome-crash-reports-at-scale-by-abhishek-arya.pdf))
