@@ -169,24 +169,7 @@ AFL und libFuzzer unterscheiden sich in mehreren Details: AFL ermöglicht einen 
 
 Zum initialen Aufsetzen von libFuzzer benötigt man etwas mehr Zeit, da man zuerst ein kleines Helferprogramm schreiben und kompilieren muss, welche die generierten Daten des Fuzzers nimmt und das Programm damit aufruft. Die Kompilation muss dabei mit dem Compiler `clang` erfolgen. Da standardmäßig In-Prozess-Fuzzing ausgeführt wird, ist die Fuzzinggeschwindigkeit höher im Vergleich zu AFL.
 
-
-#### [Quickstart AFL](http://lcamtuf.coredump.cx/afl/QuickStartGuide.txt)
-* Kompilierung:  `CC=afl-gcc ./configure --disable-shared` oder `afl-gcc -static -o programm_to_fuzz programm_to_fuzz.c`
-* Start: `afl-fuzz -i testcorpus_directory -o crashing_files_directory ./programm_to_fuzz` 
-
-#### [Quickstart libFuzzer](http://llvm.org/docs/LibFuzzer.html#getting-started)
-* Implementierung des Helferprogramms: 
-```c++
-// fuzz_target.cc
-extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
-  DoSomethingInterestingWithMyAPI(Data, Size);
-  return 0;  // Non-zero return values are reserved for future use.
-}
-```
-* Kompilierung: `clang -fsanitize=fuzzer -o my_fuzzer fuzz_target.cc`
-* Ausführung ohne Testkorpus: `./my_fuzzer`, mit Testkorpus: `./my_fuzzer -i testcorpus_directory`  
-  
-
+Im [Anhang](#anhang) sind für beide Tools Schnelleinführungen gegeben, mit denen man diese Tools ausprobieren kann.
 
 ### Kernel Fuzzer
 Da weder AFL noch libFuzzer das Fuzzing von Kerneln erlauben, wurde andere Tools entwickelt, um  dieses durchzuführen. So ist für Linux-Kernel-Fuzzing [`trinity` ](https://github.com/kernelslacker/trinity) weit verbreitet, welches alle Syscalls fuzzt. Dabei werden keine komplett zufälligen Daten verwendet, sondern die jeweils richtigen Datentypen übergeben, beispielsweise Pointer, Adressen oder Dateihandler. 
@@ -200,6 +183,27 @@ Der Linux-Kernel unterstützt Sanitizer, darum sollte sowohl mit dem [Kernel Add
   
 ### Weitere Tools
 Um die Prozessor- bzw. CPU-Instruktionen zu überprüfen, wurde das Tool [`Sandsifter`](https://github.com/rigred/sandsifter) entwickelt, welches auf x86-CPUs zufällige Instruktionen ausführt. Zum einen wurden dadurch Fehler in Disassemblern, Emulatoren und einem Hypervisor gefunden, mit denen der erzeugte Maschinencode analysiert wurde. Zum anderen wurden zusätzlich undokumentierte Prozessorfunktionen und -befehle gefunden sowie die fehlerhafte Ausführung von verschiedenen Maschinenbefehlen aufgedeckt.  
+
+
+## Anhang
+### [Schnelleinführung AFL](http://lcamtuf.coredump.cx/afl/QuickStartGuide.txt)
+* Kompilierung:  `CC=afl-gcc ./configure --disable-shared` oder `afl-gcc -static -o programm_to_fuzz programm_to_fuzz.c`
+* Start: `afl-fuzz -i testcorpus_directory -o crashing_files_directory ./programm_to_fuzz` 
+* Statusbildschirm mit einem gefunden Absturz
+  ![AFL Status Screen](https://github.com/ketograph/fuzzing-vortrag/blob/master/images/afl.png "AFL Status Bildschirm")
+
+### [Schnelleinführung libFuzzer](http://llvm.org/docs/LibFuzzer.html#getting-started)
+* Implementierung des Helferprogramms: 
+```c++
+// fuzz_target.cc
+extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
+  DoSomethingInterestingWithMyAPI(Data, Size);
+  return 0;  // Non-zero return values are reserved for future use.
+}
+```
+* Kompilierung: `clang -fsanitize=fuzzer -o my_fuzzer fuzz_target.cc`
+* Ausführung ohne Testkorpus: `./my_fuzzer`, mit Testkorpus: `./my_fuzzer -i testcorpus_directory`  
+
 
 
 # Literatur
