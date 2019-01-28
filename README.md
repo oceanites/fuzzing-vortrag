@@ -1,10 +1,5 @@
----
-title:  'Fuzzing - Ein kurzer Überblick'
-author: ketograph
-date: 28.01.2019
-keywords: [fuzzing]
-...
-
+# Fuzzing - Ein kurzer Überblick
+_28.01.2019_
 
 # Inhaltsverzeichnis
 1. [Grundidee](#grundidee)
@@ -97,10 +92,8 @@ Demonstriert werden kann diese Datenmanipulation am Beispiel des Tools `zzuf`, w
 
 | Ausgangstext   | Mutierter Text    | 
 | -------------- | ----------------- |
-| ![](images/zzuf1.png "Unveränderter Text"){width=45%} | ![](images/zzuf2.png "Mutierter Text"){width=45%} |
+| ![](images/zzuf1.png "Unveränderter Text") | ![](images/zzuf2.png "Mutierter Text") |
 | | |
-
-\pagebreak
 
 Eine bessere Technik verwendet das Tool `radamsa`, welches bei der Datenmutation erkennt, ob es sich um Zahlen oder Zeichenketten handelt. Dementsprechend werden dann die Daten manipuliert. 
 
