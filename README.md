@@ -64,11 +64,95 @@ Demonstration zufälliger Bit-Flips und Byte-Ersetzungen mittels `zzuf`:
 | Ausgangstext   | mutierter Text    | 
 | -------------- | ----------------- |
 |![](https://github.com/ketograph/fuzzing-vortrag/blob/master/images/zzuf1.png "Unveränderter Text") | ![](https://github.com/ketograph/fuzzing-vortrag/blob/master/images/zzuf2.png "Manipulierter Text") |
+```console 
+$ cat ascii-art
+    ____  ____  ____  ____
+   /\   \/\   \/\   \/\   \
+  /  \___\ \___\ \___\ \___\
+  \  / __/_/   / /   / /   /
+   \/_/\   \__/\/___/\/___/
+     /  \___\    /  \___\
+     \  / __/_  _\  /   /
+      \/_/\   \/\ \/___/
+        /  \__/  \___\
+        \  / _\  /   /
+         \/_/\ \/___/
+           /  \___\
+           \  /   /
+            \/___/
+$
+```
+ 
+``` console
+$ cat ascii-art | zzuf -r 0.003
+    ____  ____  ____  ____
+   ?\   \/\   \/\   \/\   \
+  /  \__[\ \_W_\ \___\ \___\
+  \  / __/_/ $ / /   / /   /
+   \/_/\   \__/\/___/\/___/
+     /  \___\ $  /  \___\
+     \ 0/ __/_  _\  /   /
+      \/_/\   \�\ \/_�_/
+        /  \__/  \__\
+     (  \  / _\  /   /
+         \/_/\ \/___/
+           /  \___\
+           \  /   /
+            \/___/
+$
+```
+ 
+<table><tr><th>
+Ausgangstext</th><th>
+Response
+</th>
+</tr>
+
+<tr>
+
+<td>
+<pre>
+<br/><br/><br/>200<br/><br/><br/><br/><br/>400<br/>
+</pre>
+</td>
+
+<td>
+<pre>
+json
+  {
+    "id": 10,
+    "username": "alanpartridge",
+    "email": "alan@alan.com",
+    "password_hash": "$2a$10$uhUIUmVWVnrBWx9rrDWhS.CPCWCZsyqqa8./whhfzBZydX7yvahHS",
+    "password_salt": "$2a$10$uhUIUmVWVnrBWx9rrDWhS.",
+    "created_at": "2015-02-14T20:45:26.433Z",
+    "updated_at": "2015-02-14T20:45:26.540Z"
+}
+</pre>
+</td>
+
+</tr>
+</table
  
 Datenmanipulation mittels `radamsa`
 
-![](https://github.com/ketograph/fuzzing-vortrag/blob/master/images/radamsa.png "Manipulierter Text")
-
+```console
+$ echo "Fuzzing 123 abc" | radamsa -n 13
+F󠁟uzzing 170141183460469231731687303715884105728 abc
+Fuzzing 128�0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa252823118408938500307192722993203201 abc
+Fuzzing 1 abc
+Fuzzing 12󠁥3 abc
+Fuzzing ---2215115693669076737 abc
+Fʲʠ�� 󠁀 ab��� abc
+Fuzzing 4294976518���170141183460469231731687303715884105727 abc
+Fuzzang 0;xcalc\x0a\n%d'xcalc;xcalcaaaa%d%n$(xcalc)$!!;xcalc%n-315071761096 abc
+Fuzzing 0 abc
+Fuzzing 2147483648 abc
+Fuzzing 2147483526 abc
+Fuzzing -88442 abc 
+Fuzzing 340282366920938463463374607431768211455 abc
+$  
+```
 
 
 ### Sanitizer
@@ -109,12 +193,12 @@ int main(int argc, char *argv[]) {
 Wenn dieses Programm kompiliert und ausgeführt wird, kommt es bei einem Buffer Overflow nicht sofort zum Absturz. Beim Kopieren der Eingabedaten werden einfach die Daten überschrieben. Erst bei einer deutliche längeren Zeichenkette kommt es zu einer Beschädigung des Speichers sodass das Programm abstürzt.
 
 ```console
->gcc -o buffer_overflow buffer_overflow.c
->./buffer_overflow aaaaaaaaaaaaaaa # 15*a
+$ gcc -o buffer_overflow buffer_overflow.c
+$ ./buffer_overflow aaaaaaaaaaaaaaa # 15*a
 running strcpy...
->./buffer_overflow aaaaaaaaaaaaaaaa # 16*a, buffer overflowing
+$ ./buffer_overflow aaaaaaaaaaaaaaaa # 16*a, buffer overflowing
 running strcpy...
->./buffer_overflow aaaaaaaaaaaaaaaaaaaaaaaaa # 25*a, buffer overflowing
+$ ./buffer_overflow aaaaaaaaaaaaaaaaaaaaaaaaa # 25*a, buffer overflowing
 running strcpy...
 *** stack smashing detected ***: <unknown> terminated
 ```
@@ -122,10 +206,10 @@ running strcpy...
 Sobald aber das Programm mit dem Address Sanitizer kompiliert wird, wird sofort bei einem Überschreiten der zulässigen Zeichenlänge ein Fehler ausgegeben und die Programmausführung stoppt.
 
 ```console
->gcc -o buffer_overflow -fsanitize=address buffer_overflow.c
->./buffer_overflow aaaaaaaaaaaaaaa # 15*a
+$ gcc -o buffer_overflow -fsanitize=address buffer_overflow.c
+$ ./buffer_overflow aaaaaaaaaaaaaaa # 15*a
 running strcpy...
->./buffer_overflow aaaaaaaaaaaaaaaa # 16*a, buffer overflowing
+$ ./buffer_overflow aaaaaaaaaaaaaaaa # 16*a, buffer overflowing
 running strcpy...
 =================================================================
 ==24698==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7fff58d871a0 at pc 0x7face647d741 bp 0x7fff58d87150 sp 0x7fff58d868f8
