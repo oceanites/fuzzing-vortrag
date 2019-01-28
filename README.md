@@ -148,12 +148,12 @@ Zum initilen Aufsetzen von libFuzzer benötigt man etwas mehr Zeit, da man zuers
 
 #### [Quickstart AFL](http://lcamtuf.coredump.cx/afl/QuickStartGuide.txt)
 * Kompilierung:  `CC=afl-gcc ./configure --disable-shared` oder `afl-gcc -static -o programm_to_fuzz programm_to_fuzz.c`
-* Start: `afl-fuzz -i testcase_directory -o crashing_files ./programm_to_fuzz` 
+* Start: `afl-fuzz -i testcorpus_directory -o crashing_files_directory ./programm_to_fuzz` 
 
 #### [Quickstart libFuzzer](http://llvm.org/docs/LibFuzzer.html#getting-started)
 * Implementierung des Helferprogramms: [![Code zum Erstellen eines Fuzzers mittels libFuzzer](https://github.com/ketograph/fuzzing-vortrag/blob/master/images/libfuzz-quickstart.png "Fuzzing Ziel erstellen")](http://llvm.org/docs/LibFuzzer.html#id22) 
 * Kompilierung: `clang -fsanitize=fuzzer -o my_fuzzer fuzz_target.cc`   
-* Ausführung: `./my_fuzzer [...]`  
+* Ausführung ohne Testkorpus: `./my_fuzzer`, mit Testkorpus: `./my_fuzzer -i testcorpus_directory`  
   
 
 
@@ -174,8 +174,8 @@ Zum initilen Aufsetzen von libFuzzer benötigt man etwas mehr Zeit, da man zuers
   * OSS-Fuzz: Fuzzing verbreiteter  Open-Source-Software
 
 
-# Quellen
-* Takanen, Ari AND DeMott, Jared AND Miller, Charlie: Fuzzing for software security testing and quality assurance. Artech House, 2008, Boston
+# Literatur
+* Takanen, Ari/DeMott, Jared/Miller, Charlie: Fuzzing for software security testing and quality assurance, Artech House, 2008, Boston
 * H. Liang, X. Pei, X. Jia, W. Shen and J. Zhang, "Fuzzing: State of the Art," in IEEE Transactions on Reliability, vol. 67, no. 3, pp. 1199-1218, Sept. 2018. URL: http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8371326&isnumber=8452065
 *  [B.P. Miller, L. Fredriksen, and B. So, "An Empirical Study of the Reliability of UNIX Utilities", Communications of the ACM 33, 12 (December 1990). Also appears (in German translation) as "Fatale Fehlertractigkeit: Eine Empirische Studie zur Zuverlassigkeit von UNIX-Utilities", iX, March 1991.](ftp://ftp.cs.wisc.edu/paradyn/technical_papers/fuzz.pdf) 
 * [H. Böck: Improving security with Fuzzing and Sanitizers -  Free and open source software has far too many security critical bugs. SHA Konferenz 2017](https://media.ccc.de/v/SHA2017-148-improving_security_with_fuzzing_and_sanitizers)
