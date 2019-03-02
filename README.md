@@ -2,6 +2,8 @@
 _28.01.2019_
 
 # Inhaltsverzeichnis
+
+
 1. [Grundidee](#grundidee)
 2. [Techniken](#techniken)
    1. [Zufälliges Fuzzing (random fuzzing)](#zufälliges-fuzzing-random-fuzzing)
@@ -15,10 +17,11 @@ _28.01.2019_
    1. [AFL und libFuzzer](#afl-und-libfuzzer)
    2. [Kernel Fuzzer](#kernel-fuzzer)
    3. [Weitere Tools](#weitere-tools)
-5. [Anhang](#anhang)
+5. [Fazit](#fazit)
+6. [Anhang](#anhang)
    1. [Schnelleinführung AFL](#schnelleinführung-afl)
    2. [Schnelleinführung libFuzzer](#schnelleinführung-libfuzzer)
-6. [Literatur](#literatur)
+7. [Literatur](#literatur)
 
 
 
@@ -215,6 +218,9 @@ Der Linux-Kernel unterstützt Sanitizer, darum sollte sowohl mit dem [Kernel Add
   
 ## Weitere Tools
 Um die Prozessor- bzw. CPU-Instruktionen zu überprüfen, wurde das Tool [`Sandsifter`](https://github.com/rigred/sandsifter) entwickelt, welches auf x86-CPUs zufällige Instruktionen ausführt. Zum einen wurden dadurch Fehler in Disassemblern, Emulatoren und einem Hypervisor gefunden, mit denen der erzeugte Maschinencode analysiert wurde. Zum anderen wurden zusätzlich undokumentierte Prozessorfunktionen und -befehle gefunden sowie die fehlerhafte Ausführung von verschiedenen Maschinenbefehlen aufgedeckt.  
+
+# Fazit
+Zusammenfassend ist Fuzzing eine bedeutsame Technik, um die Qualität von Software sicherzustellen. So lassen sich vor allem bei den ersten Fuzzing-Tests auf Code viele Fehler finden, die Stabilität und Sicherheit beeinträchtigen. Zusätzlich ist die Einrichtung automatischer Tests und deren Integration in eine Continuous-Integration-Pipeline nicht schwierig, wodurch eine gleichbleibend hohe Softwarequalität erzielt werden kann. Trotz der vielen Vorteile von Fuzzing-Tests, sind diese nur ein Teil und müssen durch weitere Testmethoden ergänzt werden.
 
 
 # Anhang
