@@ -1,0 +1,18 @@
+1,2c1,7
+< # Fuzzing - Ein kurzer Überblick
+< _28.01.2019_
+---
+> ---
+> title:  'Fuzzing - Ein kurzer Überblick'
+> author: Thomas Roßberg
+> date: 28.01.2019
+> keywords: [fuzzing]
+> ...
+> 
+95c100
+< | ![](images/zzuf1.png "Unveränderter Text") | ![](images/zzuf2.png "Mutierter Text") |
+---
+> | ![](images/zzuf1.png "Unveränderter Text"){width=45%} | ![](images/zzuf2.png "Mutierter Text"){width=45%} |
+96a102,103
+> 
+> \pagebreak
